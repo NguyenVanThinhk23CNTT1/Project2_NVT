@@ -206,22 +206,33 @@
                                 <div class="form-group mb-3">
                                     <label for="regUsername" class="form-label"><i class="fas fa-user me-2"></i>Tên đăng nhập</label>
                                     <input type="text" class="form-control login-input" id="regUsername" placeholder="Nhập tên đăng nhập" required>
+                                    <div class="invalid-feedback" id="regUsername-error"></div>
+                                    <div class="valid-feedback" id="regUsername-success"></div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="regEmail" class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
                                     <input type="email" class="form-control login-input" id="regEmail" placeholder="Nhập email" required>
+                                    <div class="invalid-feedback" id="regEmail-error"></div>
+                                    <div class="valid-feedback" id="regEmail-success"></div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="regPhone" class="form-label"><i class="fas fa-phone me-2"></i>Số điện thoại</label>
                                     <input type="tel" class="form-control login-input" id="regPhone" placeholder="Nhập số điện thoại">
+                                    <div class="invalid-feedback" id="regPhone-error"></div>
+                                    <div class="valid-feedback" id="regPhone-success"></div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="regPassword" class="form-label"><i class="fas fa-lock me-2"></i>Mật khẩu</label>
                                     <input type="password" class="form-control login-input" id="homeRegPassword" placeholder="Nhập mật khẩu" required>
+                                    <div class="invalid-feedback" id="regPassword-error"></div>
+                                    <div class="valid-feedback" id="regPassword-success"></div>
+                                    <div class="form-text" id="regPassword-strength"></div>
                                 </div>
                                 <div class="form-group mb-4">
                                     <label for="regConfirmPassword" class="form-label"><i class="fas fa-lock me-2"></i>Xác nhận mật khẩu</label>
                                     <input type="password" class="form-control login-input" id="homeRegConfirmPassword" placeholder="Xác nhận mật khẩu" required>
+                                    <div class="invalid-feedback" id="regConfirmPassword-error"></div>
+                                    <div class="valid-feedback" id="regConfirmPassword-success"></div>
                                 </div>
                                 <button type="submit" class="btn btn-success login-btn w-100">
                                     <i class="fas fa-user-plus me-2"></i>Đăng Ký
@@ -239,6 +250,50 @@
 </div>
 
 @section Scripts {
+    <style>
+        .form-control.is-valid {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .valid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #28a745;
+        }
+        
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+        
+        .form-text {
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
+        .text-danger {
+            color: #dc3545 !important;
+        }
+        
+        .text-warning {
+            color: #ffc107 !important;
+        }
+        
+        .text-success {
+            color: #28a745 !important;
+        }
+    </style>
     <script>
         // theme toggle with persistence
         (function(){
@@ -352,6 +407,292 @@
             });
         }
         
+        // Real-time validation functions
+        let validationTimeouts = {};
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            const successDiv = document.getElementById(fieldId + '-success');
+            
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            errorDiv.textContent = message;
+            successDiv.textContent = '';
+        }
+        
+        function showFieldSuccess(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            const successDiv = document.getElementById(fieldId + '-success');
+            
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+            errorDiv.textContent = '';
+            successDiv.textContent = message;
+        }
+        
+        function clearFieldValidation(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            const successDiv = document.getElementById(fieldId + '-success');
+            
+            field.classList.remove('is-valid', 'is-invalid');
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+        }
+        
+        // Username validation
+        function validateUsername(username) {
+            if (!username || username.trim() === '') {
+                showFieldError('regUsername', 'Tên đăng nhập không được để trống');
+                return false;
+            }
+            
+            if (username.length < 3) {
+                showFieldError('regUsername', 'Tên đăng nhập phải có ít nhất 3 ký tự');
+                return false;
+            }
+            
+            if (username.length > 50) {
+                showFieldError('regUsername', 'Tên đăng nhập không được vượt quá 50 ký tự');
+                return false;
+            }
+            
+            const usernameRegex = new RegExp('^[a-zA-Z0-9_]+$');
+            if (!usernameRegex.test(username)) {
+                showFieldError('regUsername', 'Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Email validation
+        function validateEmail(email) {
+            if (!email || email.trim() === '') {
+                showFieldError('regEmail', 'Email không được để trống');
+                return false;
+            }
+            
+            if (email.length > 100) {
+                showFieldError('regEmail', 'Email không được vượt quá 100 ký tự');
+                return false;
+            }
+            
+            // Simple email validation without complex regex
+            const atSymbol = String.fromCharCode(64);
+            const emailParts = email.split(atSymbol);
+            if (emailParts.length !== 2 || emailParts[0].length === 0 || emailParts[1].length === 0) {
+                showFieldError('regEmail', 'Email không đúng định dạng');
+                return false;
+            }
+            
+            // Check if domain has at least one dot
+            if (!emailParts[1].includes('.')) {
+                showFieldError('regEmail', 'Email không đúng định dạng');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Phone validation
+        function validatePhone(phone) {
+            if (phone && phone.trim() !== '') {
+                const phoneRegex = new RegExp('^[0-9+\\-\\s()]+$');
+                if (!phoneRegex.test(phone)) {
+                    showFieldError('regPhone', 'Số điện thoại chỉ được chứa số và các ký tự +, -, (, ), khoảng trắng');
+                    return false;
+                }
+                
+                const cleanPhone = phone.replace(new RegExp('[^0-9]', 'g'), '');
+                if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+                    showFieldError('regPhone', 'Số điện thoại phải có 10-11 chữ số');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // Password strength validation
+        function validatePassword(password) {
+            if (!password || password.trim() === '') {
+                showFieldError('homeRegPassword', 'Mật khẩu không được để trống');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                showFieldError('homeRegPassword', 'Mật khẩu phải có ít nhất 6 ký tự');
+                return false;
+            }
+            
+            if (password.length > 255) {
+                showFieldError('homeRegPassword', 'Mật khẩu không được vượt quá 255 ký tự');
+                return false;
+            }
+            
+            // Check password strength
+            let strength = 0;
+            let strengthText = '';
+            let strengthColor = '';
+            
+            if (password.length >= 8) strength++;
+            if (new RegExp('[a-z]').test(password)) strength++;
+            if (new RegExp('[A-Z]').test(password)) strength++;
+            if (new RegExp('[0-9]').test(password)) strength++;
+            if (new RegExp('[^A-Za-z0-9]').test(password)) strength++;
+            
+            if (strength < 2) {
+                strengthText = 'Mật khẩu yếu';
+                strengthColor = 'text-danger';
+            } else if (strength < 4) {
+                strengthText = 'Mật khẩu trung bình';
+                strengthColor = 'text-warning';
+            } else {
+                strengthText = 'Mật khẩu mạnh';
+                strengthColor = 'text-success';
+            }
+            
+            const strengthDiv = document.getElementById('regPassword-strength');
+            strengthDiv.innerHTML = `<small class="${strengthColor}">${strengthText}</small>`;
+            
+            return true;
+        }
+        
+        // Confirm password validation
+        function validateConfirmPassword(password, confirmPassword) {
+            if (!confirmPassword || confirmPassword.trim() === '') {
+                showFieldError('homeRegConfirmPassword', 'Xác nhận mật khẩu không được để trống');
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                showFieldError('homeRegConfirmPassword', 'Mật khẩu xác nhận không khớp');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Check username availability
+        async function checkUsernameAvailability(username) {
+            if (!validateUsername(username)) return;
+            
+            try {
+                const response = await fetch(`@Url.Action("CheckUsername", "Home", new { area = "Guest" })?username=${encodeURIComponent(username)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.available) {
+                        showFieldSuccess('regUsername', result.message);
+                    } else {
+                        showFieldError('regUsername', result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking username:', error);
+            }
+        }
+        
+        // Check email availability
+        async function checkEmailAvailability(email) {
+            if (!validateEmail(email)) return;
+            
+            try {
+                const response = await fetch(`@Url.Action("CheckEmail", "Home", new { area = "Guest" })?email=${encodeURIComponent(email)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.available) {
+                        showFieldSuccess('regEmail', result.message);
+                    } else {
+                        showFieldError('regEmail', result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking email:', error);
+            }
+        }
+        
+        // Setup real-time validation
+        function setupRealTimeValidation() {
+            // Username validation
+            const usernameField = document.getElementById('regUsername');
+            if (usernameField) {
+                usernameField.addEventListener('input', function() {
+                    clearTimeout(validationTimeouts.username);
+                    clearFieldValidation('regUsername');
+                    
+                    const username = this.value.trim();
+                    if (username) {
+                        validationTimeouts.username = setTimeout(() => {
+                            checkUsernameAvailability(username);
+                        }, 500);
+                    }
+                });
+            }
+            
+            // Email validation
+            const emailField = document.getElementById('regEmail');
+            if (emailField) {
+                emailField.addEventListener('input', function() {
+                    clearTimeout(validationTimeouts.email);
+                    clearFieldValidation('regEmail');
+                    
+                    const email = this.value.trim();
+                    if (email) {
+                        validationTimeouts.email = setTimeout(() => {
+                            checkEmailAvailability(email);
+                        }, 500);
+                    }
+                });
+            }
+            
+            // Phone validation
+            const phoneField = document.getElementById('regPhone');
+            if (phoneField) {
+                phoneField.addEventListener('input', function() {
+                    clearFieldValidation('regPhone');
+                    const phone = this.value.trim();
+                    if (phone) {
+                        validatePhone(phone);
+                    } else {
+                        clearFieldValidation('regPhone');
+                    }
+                });
+            }
+            
+            // Password validation
+            const passwordField = document.getElementById('homeRegPassword');
+            if (passwordField) {
+                passwordField.addEventListener('input', function() {
+                    clearFieldValidation('homeRegPassword');
+                    const password = this.value;
+                    if (password) {
+                        validatePassword(password);
+                    }
+                });
+            }
+            
+            // Confirm password validation
+            const confirmPasswordField = document.getElementById('homeRegConfirmPassword');
+            if (confirmPasswordField) {
+                confirmPasswordField.addEventListener('input', function() {
+                    clearFieldValidation('homeRegConfirmPassword');
+                    const password = document.getElementById('homeRegPassword').value;
+                    const confirmPassword = this.value;
+                    if (confirmPassword) {
+                        validateConfirmPassword(password, confirmPassword);
+                    }
+                });
+            }
+        }
+        
+        // Initialize real-time validation
+        setupRealTimeValidation();
+        
         // Register form handling
         const registerForm = document.getElementById('registerForm');
         if(registerForm) {
@@ -364,12 +705,20 @@
                 const password = document.getElementById('homeRegPassword').value;
                 const confirmPassword = document.getElementById('homeRegConfirmPassword').value;
                 
-                // Validation
-                if (password !== confirmPassword) {
+                // Final validation before submit
+                let isValid = true;
+                
+                if (!validateUsername(username)) isValid = false;
+                if (!validateEmail(email)) isValid = false;
+                if (!validatePhone(phone)) isValid = false;
+                if (!validatePassword(password)) isValid = false;
+                if (!validateConfirmPassword(password, confirmPassword)) isValid = false;
+                
+                if (!isValid) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi!',
-                        text: 'Mật khẩu xác nhận không khớp',
+                        text: 'Vui lòng kiểm tra lại thông tin đã nhập',
                         confirmButtonText: 'Đóng',
                         confirmButtonColor: '#dc3545',
                         allowOutsideClick: true,

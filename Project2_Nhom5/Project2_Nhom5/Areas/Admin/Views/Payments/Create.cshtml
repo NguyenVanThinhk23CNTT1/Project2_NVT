@@ -79,6 +79,17 @@
                 <span asp-validation-for="PaymentDate" class="text-danger small"></span>
             </div>
             
+            <div class="col-md-6">
+                <label asp-for="DiscountId" class="form-label">
+                    <i class="fas fa-percent"></i>Mã giảm giá
+                </label>
+                <select asp-for="DiscountId" class="form-select" asp-items="ViewBag.DiscountId">
+                    <option value="">Không sử dụng mã giảm giá</option>
+                </select>
+                <span asp-validation-for="DiscountId" class="text-danger small"></span>
+                <div class="form-text">Chọn mã giảm giá nếu có (tùy chọn)</div>
+            </div>
+            
             <div class="col-12">
                 <div class="card bg-light">
                     <div class="card-body">

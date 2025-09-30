@@ -51,6 +51,7 @@ builder.Services.AddDbContext<Project2_Nhom5Context>(options =>
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<RevenueService>();
+builder.Services.AddScoped<PaymentService>();
 
 var app = builder.Build();
 

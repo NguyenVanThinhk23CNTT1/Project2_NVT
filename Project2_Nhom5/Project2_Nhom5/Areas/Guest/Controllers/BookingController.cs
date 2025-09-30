@@ -817,48 +817,43 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     Console.WriteLine($"Discount amount: {discountAmount}, Final amount: {finalAmount}");
                 }
 
-                // Cập nhật vé với thông tin giảm giá
+                // Sử dụng raw SQL để cập nhật vé và tạo payment để tránh trigger conflict
                 foreach (var ticket in tickets)
                 {
-                    Console.WriteLine($"Updating status for ticket {ticket.TicketId} from {ticket.Status} to DaThanhToan");
+                    Console.WriteLine($"Processing ticket {ticket.TicketId} with final amount: {finalAmount}");
                     
-                    // Lưu giá gốc trước khi áp dụng giảm giá
-                    ticket.OriginalPrice = ticket.Price;
+                    // Cập nhật vé bằng raw SQL
+                    var updateTicketSql = @"
+                        UPDATE [Ve] 
+                        SET [TrangThai] = 'DaThanhToan',
+                            [GiaGoc] = @originalPrice,
+                            [GiaVe] = @finalAmount,
+                            [MaGiamGia] = @discountId,
+                            [GiaTriGiamGia] = @discountAmount,
+                            [NgayCapNhat] = @updateDate
+                        WHERE [MaVe] = @ticketId";
                     
-                    // Cập nhật giá vé sau khi áp dụng giảm giá
-                    ticket.Price = finalAmount;
-                    
-                    // Lưu thông tin giảm giá
-                    if (discount != null)
-                    {
-                        ticket.DiscountId = discount.DiscountId;
-                        ticket.DiscountAmount = discountAmount;
-                    }
-                    
-                    // Cập nhật trạng thái vé
-                    ticket.Status = "DaThanhToan";
-                }
-
-                Console.WriteLine($"Updated {tickets.Count} tickets status to DaThanhToan");
-                
-                // Lưu vé trước
-                Console.WriteLine("Saving ticket changes...");
-                await _context.SaveChangesAsync();
-                
-                // Tạo Payment records cho các vé đã thanh toán (sử dụng raw SQL để tránh trigger conflict)
-                foreach (var ticket in tickets)
-                {
-                    var sql = @"
-                        INSERT INTO [ThanhToan] ([SoTien], [NgayThanhToan], [PhuongThucThanhToan], [MaVe])
-                        VALUES (@amount, @paymentDate, @paymentMethod, @ticketId)";
-                    
-                    await _context.Database.ExecuteSqlRawAsync(sql,
-                        new Microsoft.Data.SqlClient.SqlParameter("@amount", ticket.Price),
-                        new Microsoft.Data.SqlClient.SqlParameter("@paymentDate", DateTime.Now),
-                        new Microsoft.Data.SqlClient.SqlParameter("@paymentMethod", request.PaymentMethod),
+                    await _context.Database.ExecuteSqlRawAsync(updateTicketSql,
+                        new Microsoft.Data.SqlClient.SqlParameter("@originalPrice", ticket.Price),
+                        new Microsoft.Data.SqlClient.SqlParameter("@finalAmount", finalAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@discountId", discountId ?? (object)DBNull.Value),
+                        new Microsoft.Data.SqlClient.SqlParameter("@discountAmount", discountAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@updateDate", DateTime.Now),
                         new Microsoft.Data.SqlClient.SqlParameter("@ticketId", ticket.TicketId));
                     
-                    Console.WriteLine($"Created payment for ticket {ticket.TicketId}, amount: {ticket.Price}");
+                    // Tạo Payment record bằng raw SQL
+                    var insertPaymentSql = @"
+                        INSERT INTO [ThanhToan] ([SoTien], [NgayThanhToan], [PhuongThucThanhToan], [MaVe], [MaGiamGia])
+                        VALUES (@amount, @paymentDate, @paymentMethod, @ticketId, @discountId)";
+                    
+                    await _context.Database.ExecuteSqlRawAsync(insertPaymentSql,
+                        new Microsoft.Data.SqlClient.SqlParameter("@amount", finalAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@paymentDate", DateTime.Now),
+                        new Microsoft.Data.SqlClient.SqlParameter("@paymentMethod", request.PaymentMethod),
+                        new Microsoft.Data.SqlClient.SqlParameter("@ticketId", ticket.TicketId),
+                        new Microsoft.Data.SqlClient.SqlParameter("@discountId", discountId ?? (object)DBNull.Value));
+                    
+                    Console.WriteLine($"Updated ticket {ticket.TicketId} and created payment with amount: {finalAmount}");
                 }
                 
                 Console.WriteLine("Committing transaction...");

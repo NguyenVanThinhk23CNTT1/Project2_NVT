@@ -390,5 +390,82 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 return Json(new { success = false, message = "Lỗi kiểm tra user hiện tại: " + ex.Message });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckUsername(string username)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    return Json(new { success = true, available = false, message = "Tên đăng nhập không được để trống" });
+                }
+
+                if (username.Length < 3)
+                {
+                    return Json(new { success = true, available = false, message = "Tên đăng nhập phải có ít nhất 3 ký tự" });
+                }
+
+                if (username.Length > 50)
+                {
+                    return Json(new { success = true, available = false, message = "Tên đăng nhập không được vượt quá 50 ký tự" });
+                }
+
+                // Kiểm tra ký tự đặc biệt
+                if (!System.Text.RegularExpressions.Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$"))
+                {
+                    return Json(new { success = true, available = false, message = "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới" });
+                }
+
+                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+                
+                if (existingUser != null)
+                {
+                    return Json(new { success = true, available = false, message = "Tên đăng nhập đã được sử dụng" });
+                }
+
+                return Json(new { success = true, available = true, message = "Tên đăng nhập có thể sử dụng" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi kiểm tra tên đăng nhập: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return Json(new { success = true, available = false, message = "Email không được để trống" });
+                }
+
+                if (email.Length > 100)
+                {
+                    return Json(new { success = true, available = false, message = "Email không được vượt quá 100 ký tự" });
+                }
+
+                // Kiểm tra format email
+                if (!System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    return Json(new { success = true, available = false, message = "Email không đúng định dạng" });
+                }
+
+                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                
+                if (existingUser != null)
+                {
+                    return Json(new { success = true, available = false, message = "Email đã được sử dụng" });
+                }
+
+                return Json(new { success = true, available = true, message = "Email có thể sử dụng" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi kiểm tra email: " + ex.Message });
+            }
+        }
     }
 } 

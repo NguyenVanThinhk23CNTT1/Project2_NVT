@@ -29,8 +29,9 @@ public partial class Project2_Nhom5Context : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // Đảm bảo encoding UTF-8 cho tiếng Việt
-            optionsBuilder.UseSqlServer("Server=DESKTOP-5VDN8L9\\NQTAM;Database=BanVeXemPhim;Trusted_Connection=true;TrustServerCertificate=true;");
+            // Đảm bảo encoding UTF-8 cho tiếng Việt và tối ưu cho triggers
+            optionsBuilder.UseSqlServer("Server=DESKTOP-5VDN8L9\\NQTAM;Database=BanVeXemPhim;Trusted_Connection=true;TrustServerCertificate=true;", 
+                options => options.EnableRetryOnFailure());
         }
     }
 
@@ -161,11 +162,17 @@ public partial class Project2_Nhom5Context : DbContext
             entity.Property(e => e.Amount).HasColumnName("SoTien").HasColumnType("decimal(10,2)");
             entity.Property(e => e.PaymentMethod).HasColumnName("PhuongThucThanhToan");
             entity.Property(e => e.PaymentDate).HasColumnName("NgayThanhToan").HasColumnType("datetime").HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.DiscountId).HasColumnName("MaGiamGia");
 
             entity.HasOne(d => d.Ticket)
                 .WithOne(p => p.Payment)
                 .HasForeignKey<Payment>(d => d.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.Discount)
+                .WithMany()
+                .HasForeignKey(d => d.DiscountId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Map Revenue -> DoanhThu
@@ -178,16 +185,23 @@ public partial class Project2_Nhom5Context : DbContext
             entity.Property(e => e.TotalAmount).HasColumnName("TongTien").HasColumnType("decimal(15,2)").HasDefaultValue(0m);
             entity.Property(e => e.AgencyCommission).HasColumnName("HoaHongDaiLy").HasColumnType("decimal(5,2)").HasDefaultValue(0m);
             
-            // DoanhThuThuc is a computed column - exclude from insert/update
+            // Map the computed column DoanhThuThuc to ActualRevenue
             entity.Property(e => e.ActualRevenue)
-                .HasColumnName("DoanhThuThuc")
+                .HasColumnName("ActualRevenue")
                 .HasColumnType("decimal(15,2)")
-                .HasDefaultValue(0m)
-                .ValueGeneratedOnAddOrUpdate();
+                .HasDefaultValue(0m);
             
+            // Map NgayTao to CreatedDate
             entity.Property(e => e.CreatedDate).HasColumnName("NgayTao").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            
+            // Map SoVeBan to TicketsSold
             entity.Property(e => e.TicketsSold).HasColumnName("SoVeBan").HasDefaultValue(0);
+            
+            // Map TongGiaVe to TotalTicketPrice
             entity.Property(e => e.TotalTicketPrice).HasColumnName("TongGiaVe").HasColumnType("decimal(15,2)").HasDefaultValue(0m);
+            
+            // Map CreatedDate to CreatedDateNew (if needed)
+            entity.Property(e => e.CreatedDateNew).HasColumnName("CreatedDate").HasColumnType("datetime");
 
             entity.HasOne(d => d.Showtime)
                 .WithMany(p => p.Revenues)

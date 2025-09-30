@@ -13,13 +13,16 @@ public partial class Revenue
 
     public decimal? AgencyCommission { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-    public int? TicketsSold { get; set; }
+    public int TicketsSold { get; set; }
 
-    public decimal? TotalTicketPrice { get; set; }
+    public decimal TotalTicketPrice { get; set; }
 
     public decimal? ActualRevenue { get; set; }
+
+    // Additional fields from SQL schema
+    public DateTime? CreatedDateNew { get; set; }
 
     public virtual Showtime? Showtime { get; set; }
 }

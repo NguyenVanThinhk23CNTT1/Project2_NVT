@@ -15,9 +15,9 @@ public partial class Payment
 
     public DateTime? PaymentDate { get; set; }
 
-    // public int? DiscountId { get; set; } // Tạm thời comment do cột chưa tồn tại trong database
+    public int? DiscountId { get; set; }
 
     public virtual Ticket? Ticket { get; set; }
 
-    // public virtual Discount? Discount { get; set; } // Tạm thời comment do cột chưa tồn tại trong database
+    public virtual Discount? Discount { get; set; }
 }

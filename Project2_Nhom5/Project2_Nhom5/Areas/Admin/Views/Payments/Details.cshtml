@@ -103,13 +103,33 @@
                         <div class="d-flex align-items-center p-3 bg-light rounded">
                             <div class="bg-warning text-white rounded-circle p-2 me-3">
                                 <i class="fas fa-ticket-alt"></i>
-</div>
-<div>
+                            </div>
+                            <div>
                                 <small class="text-muted">Vé liên quan</small>
                                 <div class="fw-bold">#@(Model.Ticket?.TicketId.ToString("000000") ?? "N/A")</div>
                                 @if (Model.Ticket != null)
                                 {
                                     <small class="text-muted">@Model.Ticket.Showtime?.Movie?.Title</small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded">
+                            <div class="bg-success text-white rounded-circle p-2 me-3">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Mã giảm giá</small>
+                                @if (Model.Discount != null)
+                                {
+                                    <div class="fw-bold">@Model.Discount.Code</div>
+                                    <small class="text-muted">@Model.Discount.Description</small>
+                                }
+                                else
+                                {
+                                    <div class="fw-bold text-muted">Không có</div>
                                 }
                             </div>
                         </div>

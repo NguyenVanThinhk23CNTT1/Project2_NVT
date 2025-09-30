@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Project2_Nhom5.Models;
+using Project2_Nhom5.Services;
 
 namespace Project2_Nhom5.Controllers
 {
@@ -13,10 +14,12 @@ namespace Project2_Nhom5.Controllers
     public class PaymentsController : Controller
     {
         private readonly Project2_Nhom5Context _context;
+        private readonly PaymentService _paymentService;
 
-        public PaymentsController(Project2_Nhom5Context context)
+        public PaymentsController(Project2_Nhom5Context context, PaymentService paymentService)
         {
             _context = context;
+            _paymentService = paymentService;
         }
 
         // GET: Payments
@@ -29,6 +32,7 @@ namespace Project2_Nhom5.Controllers
                 .Include(p => p.Ticket)
                 .ThenInclude(t => t.Showtime)
                 .ThenInclude(s => s.Movie)
+                .Include(p => p.Discount)
                 .AsQueryable();
 
             // Apply search filter
@@ -116,6 +120,7 @@ namespace Project2_Nhom5.Controllers
 
             var payment = await _context.Payments
                 .Include(p => p.Ticket)
+                .Include(p => p.Discount)
                 .FirstOrDefaultAsync(m => m.PaymentId == id);
             if (payment == null)
             {
@@ -139,7 +144,17 @@ namespace Project2_Nhom5.Controllers
                 })
                 .ToListAsync();
 
+            // Get available discounts
+            var availableDiscounts = await _context.Discounts
+                .Where(d => d.ExpiryDate >= DateOnly.FromDateTime(DateTime.Today))
+                .Select(d => new { 
+                    d.DiscountId, 
+                    DisplayText = $"{d.Code} - {d.Description} ({d.Value}% off)" 
+                })
+                .ToListAsync();
+
             ViewData["TicketId"] = new SelectList(availableTickets, "TicketId", "DisplayText");
+            ViewData["DiscountId"] = new SelectList(availableDiscounts, "DiscountId", "DisplayText");
             return View();
         }
 
@@ -148,7 +163,7 @@ namespace Project2_Nhom5.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentId,TicketId,Amount,PaymentMethod,PaymentDate")] Payment payment)
+        public async Task<IActionResult> Create([Bind("PaymentId,TicketId,Amount,PaymentMethod,PaymentDate,DiscountId")] Payment payment)
         {
             try
             {
@@ -161,23 +176,22 @@ namespace Project2_Nhom5.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    _context.Add(payment);
-                    // Sau khi thanh toán, cập nhật trạng thái vé thành 'DaThanhToan'
-                    var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == payment.TicketId);
-                    if (ticket != null)
-                    {
-                        ticket.Status = "DaThanhToan";
-                        _context.Tickets.Update(ticket);
-                    }
-                    await _context.SaveChangesAsync();
+                    var success = await _paymentService.CreatePaymentAsync(payment);
                     
-                    // Check if request wants JSON response
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    if (success)
                     {
-                        return Json(new { success = true, message = "Tạo thanh toán thành công!" });
+                        // Check if request wants JSON response
+                        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                        {
+                            return Json(new { success = true, message = "Tạo thanh toán thành công!" });
+                        }
+                        
+                        return RedirectToAction(nameof(Index));
                     }
-                    
-                    return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        ModelState.AddModelError("TicketId", "Vé này đã có thanh toán. Mỗi vé chỉ có thể có một thanh toán.");
+                    }
                 }
                 else
                 {

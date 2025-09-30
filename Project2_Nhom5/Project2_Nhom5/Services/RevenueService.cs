@@ -19,59 +19,8 @@ namespace Project2_Nhom5.Services
         /// <returns></returns>
         public async Task UpdateRevenueForShowtimeAsync(int showtimeId)
         {
-            // Tính toán dữ liệu bán hàng thực tế
-            var salesData = await _context.Tickets
-                .Where(t => t.ShowtimeId == showtimeId && t.Status == "DaThanhToan")
-                .Include(t => t.Payment)
-                .GroupBy(t => t.ShowtimeId)
-                .Select(g => new
-                {
-                    ShowtimeId = g.Key,
-                    TicketsSold = g.Count(),
-                    TotalTicketPrice = g.Sum(t => t.Price),
-                    TotalPaymentAmount = g.Sum(t => t.Payment != null ? t.Payment.Amount : 0)
-                })
-                .FirstOrDefaultAsync();
-
-            if (salesData == null)
-            {
-                return;
-            }
-
-            // Lấy tỷ lệ hoa hồng (mặc định 5% nếu chưa có)
-            var existingRevenue = await _context.Revenues
-                .FirstOrDefaultAsync(r => r.ShowtimeId == showtimeId);
-
-            var commissionRate = existingRevenue?.AgencyCommission ?? 5.00m;
-
-            // Cập nhật hoặc tạo bản ghi doanh thu
-            if (existingRevenue != null)
-            {
-                existingRevenue.TotalAmount = salesData.TotalPaymentAmount;
-                existingRevenue.TicketsSold = salesData.TicketsSold;
-                existingRevenue.TotalTicketPrice = salesData.TotalTicketPrice;
-                existingRevenue.AgencyCommission = commissionRate;
-                // ActualRevenue is computed by database, don't set it manually
-                
-                _context.Revenues.Update(existingRevenue);
-            }
-            else
-            {
-                var newRevenue = new Revenue
-                {
-                    ShowtimeId = showtimeId,
-                    TotalAmount = salesData.TotalPaymentAmount,
-                    TicketsSold = salesData.TicketsSold,
-                    TotalTicketPrice = salesData.TotalTicketPrice,
-                    AgencyCommission = commissionRate,
-                    // ActualRevenue is computed by database, don't set it manually
-                    CreatedDate = DateTime.Now
-                };
-
-                _context.Revenues.Add(newRevenue);
-            }
-
-            await _context.SaveChangesAsync();
+            // Use stored procedure to sync revenue data
+            await _context.Database.ExecuteSqlRawAsync("EXEC [dbo].[sp_SyncRevenueData] @MaSuatChieu = {0}", showtimeId);
         }
 
         /// <summary>
@@ -125,13 +74,13 @@ namespace Project2_Nhom5.Services
         public async Task<List<object>> GetMonthlyRevenueStatsAsync(int year)
         {
             return await _context.Revenues
-                .Where(r => r.CreatedDate.HasValue && r.CreatedDate.Value.Year == year)
-                .GroupBy(r => r.CreatedDate.Value.Month)
+                .Where(r => r.CreatedDate.Year == year)
+                .GroupBy(r => r.CreatedDate.Month)
                 .Select(g => new
                 {
                     Month = g.Key,
                     TotalRevenue = g.Sum(r => r.ActualRevenue ?? 0),
-                    TotalTickets = g.Sum(r => r.TicketsSold ?? 0),
+                    TotalTickets = g.Sum(r => r.TicketsSold),
                     ShowtimeCount = g.Count()
                 })
                 .OrderBy(x => x.Month)
