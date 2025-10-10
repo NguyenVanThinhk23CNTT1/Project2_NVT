@@ -1414,6 +1414,110 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 return Json(errorResult);
             }
         }
+
+        // API để xóa vé chưa thanh toán
+        [HttpPost]
+        public async Task<IActionResult> DeletePendingTickets([FromBody] List<int> ticketIds)
+        {
+            var userId = Request.Cookies["userId"];
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "Bạn cần đăng nhập để xóa vé" });
+            }
+
+            if (ticketIds == null || !ticketIds.Any())
+            {
+                return Json(new { success = false, message = "Vui lòng chọn vé để xóa" });
+            }
+
+            try
+            {
+                Console.WriteLine($"DeletePendingTickets - UserId: {userId}");
+                Console.WriteLine($"DeletePendingTickets - TicketIds: {string.Join(",", ticketIds)}");
+
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                // Kiểm tra vé có thuộc về user và có trạng thái ChoXuLy không
+                var tickets = await _context.Tickets
+                    .Where(t => ticketIds.Contains(t.TicketId) && 
+                               t.UserId.ToString() == userId && 
+                               t.Status == "ChoXuLy")
+                    .ToListAsync();
+
+                Console.WriteLine($"Found {tickets.Count} tickets to delete");
+
+                if (!tickets.Any())
+                {
+                    return Json(new { success = false, message = "Không tìm thấy vé hợp lệ để xóa" });
+                }
+
+                // Xóa vé
+                _context.Tickets.RemoveRange(tickets);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                Console.WriteLine($"Successfully deleted {tickets.Count} tickets");
+
+                return Json(new
+                {
+                    success = true,
+                    message = $"Đã xóa thành công {tickets.Count} vé",
+                    deletedCount = tickets.Count,
+                    deletedTicketIds = tickets.Select(t => t.TicketId).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in DeletePendingTickets: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Có lỗi xảy ra khi xóa vé",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // API để lấy số đơn hàng của user (để kiểm tra điều kiện vòng quay may mắn)
+        [HttpGet]
+        public async Task<IActionResult> GetUserOrderCount()
+        {
+            var userId = Request.Cookies["userId"];
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "Bạn cần đăng nhập" });
+            }
+
+            try
+            {
+                // Đếm số vé đã thanh toán của user (coi như đơn hàng)
+                var orderCount = await _context.Tickets
+                    .Where(t => t.UserId.ToString() == userId && t.Status == "DaThanhToan")
+                    .CountAsync();
+
+                Console.WriteLine($"User {userId} has {orderCount} completed orders");
+
+                return Json(new
+                {
+                    success = true,
+                    orderCount = orderCount,
+                    isEligibleForLuckyWheel = orderCount >= 3
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetUserOrderCount: {ex.Message}");
+                return Json(new
+                {
+                    success = false,
+                    message = "Có lỗi xảy ra khi kiểm tra số đơn hàng",
+                    error = ex.Message
+                });
+            }
+        }
     }
 
     // Request models

@@ -44,23 +44,901 @@
         .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .login-btn-hero { background: var(--gradient); border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; }
         .login-btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4); color: white; }
+        
+        /* Back Button Styles */
+        .back-btn {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            backdrop-filter: blur(15px);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 1) 0%, rgba(247, 147, 30, 1) 100%);
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.6);
+            border-color: rgba(255, 255, 255, 0.6);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        
+        .back-btn i {
+            font-size: 16px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .back-btn:hover i {
+            transform: translateX(-3px);
+            animation: bounceLeft 0.6s ease-in-out;
+        }
+        
+        @@keyframes bounceLeft {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-3px);
+            }
+            40% {
+                transform: translateX(-6px);
+            }
+            60% {
+                transform: translateX(-4px);
+            }
+        }
+        
+        .back-btn:active {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+        }
+        
+        /* Demo button để so sánh */
+        .demo-section {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-section h6 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .demo-old-btn {
+            background: white;
+            color: black;
+            border: 1px solid #ccc;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-old-btn:hover {
+            background: #f8f9fa;
+            color: black;
+            text-decoration: none;
+        }
+        
+        /* Trailer Section Styles */
+        .trailer-section { background: var(--bg-primary); padding: 4rem 0; }
+        .trailer-player { position: relative; background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        
+        /* Enhanced Slideshow Styles - Full Width */
+        .trailer-slideshow { 
+            position: relative; 
+            height: 600px; 
+            overflow: hidden; 
+            border-radius: 25px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            background: #000; /* Solid black background to prevent purple showing */
+        }
+        .trailer-slide { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            opacity: 0; 
+            transition: all 0.6s ease-in-out; 
+            transform: translateX(100%); 
+            z-index: 1;
+        }
+        .trailer-slide.active { 
+            opacity: 1; 
+            transform: translateX(0); 
+            z-index: 2;
+        }
+        .trailer-slide.prev { 
+            transform: translateX(-100%); 
+            z-index: 0;
+        }
+        .trailer-slide-bg { 
+            width: 100%; 
+            height: 100%; 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            position: relative;
+            filter: brightness(0.8) contrast(1.1);
+            transition: transform 0.6s ease-in-out;
+        }
+        .trailer-slide:hover .trailer-slide-bg {
+            transform: scale(1.05);
+        }
+        .trailer-slide-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.6) 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .trailer-slide-content { 
+            text-align: center; 
+            color: white; 
+            padding: 4rem; 
+            max-width: 900px; 
+            animation: slideInUp 0.8s ease-out;
+        }
+        .trailer-slide-title { 
+            font-size: 4rem; 
+            font-weight: 800; 
+            margin-bottom: 1.5rem; 
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            background: linear-gradient(45deg, #fff, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+        .trailer-slide-description { 
+            font-size: 1.6rem; 
+            margin-bottom: 2.5rem; 
+            opacity: 0.95; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        .trailer-slide-info { 
+            margin-bottom: 3rem; 
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .trailer-slide-genre { 
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            padding: 1rem 2rem; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 1.2rem;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .trailer-slide-duration { 
+            background: rgba(255,255,255,0.15); 
+            padding: 1rem 2rem; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+        .trailer-slide-play-btn { 
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-radius: 50%; 
+            width: 120px; 
+            height: 120px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            margin: 0 auto; 
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
+            border: 3px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+        .trailer-slide-play-btn:hover { 
+            transform: scale(1.15) translateY(-5px); 
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.8);
+            border-color: rgba(255,255,255,0.5);
+        }
+        .trailer-slide-play-btn i { 
+            color: white; 
+            margin-bottom: 0.5rem; 
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .trailer-slide-play-btn span { 
+            color: white; 
+            font-weight: 700; 
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        /* Animation keyframes */
+        @@keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Bottom Navigation Styles */
+        .trailer-bottom-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            z-index: 10;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9));
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+        
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-color: rgba(255,255,255,0.6);
+            transform: scale(1.15) translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+        }
+        
+        .nav-btn:active {
+            transform: scale(1.05) translateY(-1px);
+        }
+        
+        .prev-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .prev-btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        
+        .next-btn:hover {
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            box-shadow: 0 15px 35px rgba(245, 87, 108, 0.4);
+        }
+        
+        .slide-indicators {
+            display: flex;
+            gap: 0.8rem;
+            background: rgba(0,0,0,0.7);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .slide-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .slide-indicator.active {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            transform: scale(1.3);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+        }
+        
+        .slide-indicator:hover {
+            background: rgba(255,255,255,0.7);
+            transform: scale(1.1);
+        }
+        
+        .trailer-play-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .play-toggle-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            font-size: 14px;
+        }
+        
+        .play-toggle-btn:hover {
+            background: linear-gradient(135deg, #f7931e, #ff6b35);
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6);
+        }
+        
+        .auto-play-enable {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        
+        .enable-auto-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .enable-auto-btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+        
+        .enable-auto-btn i {
+            font-size: 16px;
+        }
+        
+        /* Hide old controls */
+        .trailer-controls { 
+            display: none;
+        }
+        .trailer-nav-dots { 
+            display: flex; 
+            gap: 0.5rem; 
+        }
+        .nav-dot { 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.4); 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .nav-dot.active { 
+            background: linear-gradient(135deg, #ff6b35, #f7931e); 
+            transform: scale(1.2); 
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+        }
+        .nav-dot:hover { 
+            background: rgba(255,255,255,0.6); 
+            transform: scale(1.1);
+        }
+        .trailer-control-buttons { 
+            display: flex; 
+            gap: 0.5rem; 
+        }
+        .control-btn { 
+            background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            color: white; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+        }
+        .control-btn:hover { 
+            background: rgba(255,255,255,0.25); 
+            transform: scale(1.1);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .play-pause-btn { 
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+        .play-pause-btn:hover {
+            background: linear-gradient(135deg, #f7931e, #ff6b35);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Enhanced Video Container Styles */
+        .trailer-video-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .trailer-video-container:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        /* Enhanced Controls */
+        .trailer-video-container .controls-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 70%, transparent 100%);
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .trailer-video-container:hover .controls-container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Enhanced Button Styles */
+        .trailer-video-container button {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .trailer-video-container button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        
+        .trailer-video-container button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+        
+        /* Enhanced Responsive Design */
+        @@media (max-width: 1200px) {
+            .trailer-slideshow { height: 550px; }
+            .trailer-slide-title { font-size: 3.5rem; }
+            .trailer-slide-description { font-size: 1.4rem; }
+        }
+        
+        @@media (max-width: 768px) {
+            .trailer-slideshow { height: 450px; }
+            .trailer-slide-title { font-size: 2.8rem; }
+            .trailer-slide-description { font-size: 1.2rem; }
+            .trailer-slide-content { padding: 2.5rem; }
+            .trailer-slide-play-btn { width: 100px; height: 100px; }
+            .trailer-slide-play-btn i { font-size: 2.2rem; }
+            .trailer-slide-play-btn span { font-size: 0.9rem; }
+            .trailer-bottom-nav {
+                gap: 1.5rem;
+                bottom: 15px;
+            }
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 14px;
+            }
+            .slide-indicators {
+                padding: 0.6rem 1.2rem;
+                gap: 0.6rem;
+            }
+            .slide-indicator {
+                width: 10px;
+                height: 10px;
+            }
+            .play-toggle-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 12px;
+            }
+            .trailer-slide-info { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 0.8rem; 
+            }
+            .trailer-slide-genre, .trailer-slide-duration { 
+                font-size: 1rem; 
+                padding: 0.8rem 1.5rem; 
+            }
+            .trailer-video-container {
+                height: 400px;
+            }
+            .trailer-video-container .controls-container {
+                padding: 20px;
+            }
+            .trailer-video-container button {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+        
+        @@media (max-width: 576px) {
+            .trailer-slideshow { height: 400px; }
+            .trailer-slide-title { font-size: 2.2rem; }
+            .trailer-slide-description { font-size: 1rem; }
+            .trailer-slide-content { padding: 2rem; }
+            .trailer-slide-play-btn { width: 90px; height: 90px; }
+            .trailer-slide-play-btn i { font-size: 2rem; }
+            .trailer-slide-play-btn span { font-size: 0.8rem; }
+            .trailer-slide-genre, .trailer-slide-duration { 
+                font-size: 0.9rem; 
+                padding: 0.6rem 1.2rem; 
+            }
+            .trailer-bottom-nav {
+                gap: 1rem;
+                bottom: 10px;
+            }
+            .nav-btn { 
+                width: 40px; 
+                height: 40px; 
+                font-size: 12px;
+            }
+            .slide-indicators {
+                padding: 0.5rem 1rem;
+                gap: 0.5rem;
+            }
+            .slide-indicator { 
+                width: 8px; 
+                height: 8px; 
+            }
+            .play-toggle-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 10px;
+            }
+            .trailer-video-container {
+                height: 350px;
+            }
+        }
+        
+        @@media (max-width: 400px) {
+            .trailer-slideshow { height: 350px; }
+            .trailer-slide-title { font-size: 1.8rem; }
+            .trailer-slide-description { font-size: 0.9rem; }
+            .trailer-slide-content { padding: 1.5rem; }
+            .trailer-slide-play-btn { width: 80px; height: 80px; }
+            .trailer-slide-play-btn i { font-size: 1.8rem; }
+            .trailer-slide-play-btn span { font-size: 0.7rem; }
+            .trailer-video-container {
+                height: 300px;
+            }
+        }
+        .play-pause-btn:hover { background: var(--gradient); transform: scale(1.1); }
+        
+        .trailer-video { width: 100%; height: 400px; border-radius: 20px; }
+        .trailer-sidebar { background: var(--card-bg); border-radius: 20px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        .trailer-list { max-height: 500px; overflow-y: auto; }
+        .trailer-item { display: flex; align-items: center; padding: 1rem; border-radius: 15px; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease; border: 1px solid var(--border-color); }
+        .trailer-item:hover { background: var(--bg-secondary); transform: translateX(5px); }
+        .trailer-item.active { background: var(--gradient); color: white; }
+        .trailer-thumbnail { position: relative; width: 80px; height: 60px; margin-right: 1rem; border-radius: 10px; overflow: hidden; }
+        .trailer-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .play-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: white; opacity: 0; transition: all 0.3s ease; }
+        .trailer-item:hover .play-overlay { opacity: 1; }
+        .trailer-details { flex: 1; }
+        .trailer-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 0.25rem; color: var(--text-primary); }
+        .trailer-genre { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+        .trailer-rating { font-size: 0.8rem; color: var(--text-secondary); }
+        .trailer-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; }
+        .trailer-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .trailer-card-image { position: relative; height: 200px; overflow: hidden; }
+        .trailer-card-image img { width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease; }
+        .trailer-card:hover .trailer-card-image img { transform: scale(1.05); }
+        .trailer-card-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.3s ease; }
+        .trailer-card:hover .trailer-card-overlay { opacity: 1; }
+        .play-icon { color: white; margin-bottom: 1rem; }
+        .trailer-duration { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.8rem; }
+        .trailer-card-content { padding: 1.5rem; }
+        .trailer-card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .trailer-card-genre { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+        .trailer-card-actions { text-align: center; }
+        
+        /* Responsive Styles - Full Width */
+        @@media (max-width: 768px) {
+            .trailer-slideshow { height: 400px; }
+            .trailer-slide-title { font-size: 2.5rem; }
+            .trailer-slide-description { font-size: 1.2rem; }
+            .trailer-slide-content { padding: 2rem; }
+            .trailer-slide-play-btn { width: 80px; height: 80px; }
+            .trailer-slide-play-btn i { font-size: 2rem; }
+            .trailer-slide-play-btn span { font-size: 0.8rem; }
+            .trailer-controls { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .trailer-control-buttons { order: 1; }
+            .trailer-nav-dots { order: 2; }
+        }
+        
+        @@media (max-width: 576px) {
+            .trailer-slideshow { height: 350px; }
+            .trailer-slide-title { font-size: 2rem; }
+            .trailer-slide-description { font-size: 1rem; }
+            .trailer-slide-content { padding: 1.5rem; }
+            .trailer-slide-play-btn { width: 70px; height: 70px; }
+            .trailer-slide-play-btn i { font-size: 1.5rem; }
+            .trailer-slide-play-btn span { font-size: 0.7rem; }
+            .trailer-slide-genre, .trailer-slide-duration { font-size: 0.9rem; padding: 0.5rem 1rem; }
+        }
     </style>
 }
 
-<!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="floating-element"><i class="fas fa-film fa-3x"></i></div>
-    <div class="floating-element"><i class="fas fa-ticket-alt fa-2x"></i></div>
-    <div class="floating-element"><i class="fas fa-popcorn fa-3x"></i></div>
+<!-- Trailer Section -->
+<section id="trailers" class="trailer-section">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 hero-content">
-                <h1 class="hero-title reveal" style="margin-top: 100px;">Trải Nghiệm Điện Ảnh Đỉnh Cao</h1>
-                <p class="hero-subtitle reveal">Đặt vé xem phim online dễ dàng, nhanh chóng với hàng trăm bộ phim hot nhất hiện tại</p>
-                <a href="#movies" class="cta-button reveal" style="margin-bottom: 10px;"><i class="fas fa-play me-2"></i>Đặt Vé Ngay</a>
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title reveal text-center mb-5">
+                    <i class="fas fa-play-circle me-3"></i>Trailer Phim Hot
+                </h2>
             </div>
-            <div class="col-lg-6"><div class="hero-image reveal"><img src="~/img/hero-cinema.jpg" alt="Cinema" class="img-fluid rounded-4 shadow" loading="lazy"></div></div>
         </div>
+        
+        <!-- Main Trailer Player - Full Width -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="main-trailer-container reveal">
+                    <div class="trailer-player">
+                        <!-- Auto-play Slideshow -->
+                        <div class="trailer-slideshow" id="trailerSlideshow">
+                            @{
+                                var autoPlayMovies = Model.NowShowing.Take(5).ToList();
+                                
+                                // Debug: Log số lượng phim và chi tiết
+                                <script>
+                                    console.log('Number of movies in NowShowing:', @Model.NowShowing.Count);
+                                    @foreach (var movie in Model.NowShowing.Take(5))
+                                    {
+                                        <text>console.log('DB Movie: @movie.Title (ID: @movie.MovieId)');</text>
+                                    }
+                                </script>
+                                
+                                // Đảm bảo không có phim trùng lặp theo MovieId và Title
+                                autoPlayMovies = autoPlayMovies.GroupBy(m => m.MovieId).Select(g => g.First()).ToList();
+                                // Nếu vẫn có trùng lặp theo title, loại bỏ thêm
+                                autoPlayMovies = autoPlayMovies.GroupBy(m => m.Title).Select(g => g.First()).ToList();
+                                
+                                // Debug: Log sau khi loại bỏ trùng lặp
+                                <script>
+                                    console.log('After deduplication:', @autoPlayMovies.Count);
+                                    @foreach (var movie in autoPlayMovies)
+                                    {
+                                        <text>console.log('Unique Movie: @movie.Title (ID: @movie.MovieId)');</text>
+                                    }
+                                </script>
+                                
+                                // Nếu không đủ phim hoặc chỉ có 1 phim, tạo dữ liệu mẫu
+                                if (autoPlayMovies.Count < 2)
+                                {
+                                    // Tạo ít nhất 2 slide với dữ liệu mẫu
+                                    var sampleMovies = new List<Project2_Nhom5.Models.Movie>
+                                    {
+                                        new Project2_Nhom5.Models.Movie { MovieId = 1, Title = "Avengers: Endgame", Description = "Một đỉnh cao của 22 bộ phim liên kết", Genre = "Hành động, Khoa học viễn tưởng", Duration = 181, PosterUrl = "", TrailerUrl = "https://www.youtube.com/embed/TcMBFSGVi1c" },
+                                        new Project2_Nhom5.Models.Movie { MovieId = 2, Title = "Spider-Man: No Way Home", Description = "Cuộc phiêu lưu đa vũ trụ của Spider-Man", Genre = "Hành động, Siêu anh hùng", Duration = 148, PosterUrl = "", TrailerUrl = "https://www.youtube.com/embed/JfVOs4VSpmA" }
+                                    };
+                                    
+                                    autoPlayMovies = sampleMovies.Take(2).ToList();
+                                }
+                                else
+                                {
+                                    // Chỉ lấy 2 phim đầu tiên để tránh quá nhiều slide
+                                    autoPlayMovies = autoPlayMovies.Take(2).ToList();
+                                }
+                            }
+                            @for (int i = 0; i < autoPlayMovies.Count; i++)
+                            {
+                                var movie = autoPlayMovies[i];
+                                // Mỗi phim có trailer URL riêng, không force Avengers cho tất cả
+                                var trailerUrl = !string.IsNullOrEmpty(movie.TrailerUrl) ? movie.TrailerUrl : "https://www.youtube.com/embed/TcMBFSGVi1c";
+                                
+                                // Debug: Log thông tin từng slide
+                                <script>console.log('Creating slide @i: @movie.Title (ID: @movie.MovieId) - Trailer: @trailerUrl');</script>
+                                
+                                <div class="trailer-slide @(i == 0 ? "active" : "")" data-movie-id="@movie.MovieId" data-title="@movie.Title" data-description="@movie.Description" data-trailer-url="@trailerUrl">
+                                    <div class="trailer-slide-bg" style="background-image: url('@(!string.IsNullOrEmpty(movie.PosterUrl) ? Url.Content("~/" + movie.PosterUrl) : "https://placehold.co/1200x600/ff6b35/ffffff?text=" + movie.Title)')">
+                                        <div class="trailer-slide-overlay">
+                                                <div class="trailer-slide-content">
+                                                    <h3 class="trailer-slide-title">@movie.Title</h3>
+                                                    <p class="trailer-slide-description">@movie.Description</p>
+                                                    <div class="trailer-slide-info">
+                                                        <span class="trailer-slide-genre">@movie.Genre</span>
+                                                        <span class="trailer-slide-duration">@(movie.Duration?.ToString() ?? "") phút</span>
+                                                    </div>
+                                                    <div class="trailer-slide-play-btn" onclick="playTrailer('main')">
+                                                        <i class="fas fa-play fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        
+                        <!-- Bottom Navigation Buttons -->
+                        <div class="trailer-bottom-nav">
+                            <button class="nav-btn prev-btn" onclick="previousSlide()" title="Slide trước">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="slide-indicators">
+                                @for (int i = 0; i < autoPlayMovies.Count; i++)
+                                {
+                                    <span class="slide-indicator @(i == 0 ? "active" : "")" onclick="goToSlide(@i)" title="@autoPlayMovies[i].Title"></span>
+                                }
+                            </div>
+                            <button class="nav-btn next-btn" onclick="nextSlide()" title="Slide tiếp">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Play/Pause Toggle -->
+                        <div class="trailer-play-toggle">
+                            <button class="play-toggle-btn" onclick="toggleSlideshow()" id="playPauseBtn" title="Tạm dừng/Tiếp tục">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Auto-play Enable Button (Shows when auto-play is disabled) -->
+                        <!-- <div class="auto-play-enable" id="autoPlayEnable" style="display: none;">
+                            <button class="enable-auto-btn" onclick="enableAutoPlay()" title="Bật tự động phát">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Bật Auto-play</span>
+                            </button>
+                        </div> -->
+                        
+                        <!-- Video Player (Hidden by default) -->
+                        <video id="mainTrailer" class="trailer-video" controls style="display: none;">
+                            <source src="" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trailer Grid -->
+        <!-- <div class="row">
+            <div class="col-12">
+                <h4 class="mb-4">
+                    <i class="fas fa-video me-2"></i>Tất Cả Trailer
+                </h4>
+            </div>
+            @foreach (var movie in Model.NowShowing)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="trailer-card reveal" onclick="selectTrailer('@movie.MovieId', '@movie.Title', '@movie.Description', '@movie.TrailerUrl')">
+                        <div class="trailer-card-image">
+                            <img src="@(!string.IsNullOrEmpty(movie.PosterUrl) ? Url.Content("~/" + movie.PosterUrl) : "https://placehold.co/300x200/ff6b35/ffffff?text=Movie")" alt="@movie.Title" class="img-fluid">
+                            <div class="trailer-card-overlay">
+                                <div class="play-icon">
+                                    <i class="fas fa-play fa-2x"></i>
+                                </div>
+                                <div class="trailer-duration">
+                                    <i class="fas fa-clock me-1"></i>2:30
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trailer-card-content">
+                            <h5 class="trailer-card-title">@movie.Title</h5>
+                            <p class="trailer-card-genre">@movie.Genre</p>
+                            <div class="trailer-card-actions">
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-ticket-alt me-1"></i>Đặt Vé
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div> -->
     </div>
 </section>
 
@@ -977,6 +1855,420 @@
                 console.log('Error checking login status:', error);
             }
         }
+        // Trailer Slideshow functionality
+        let currentSlide = 0;
+        let slideshowInterval = null;
+        let isPlaying = false;
+        let slides = [];
+        let isVideoPlaying = false; // Flag to prevent duplicate video players
+        let isUserScrolled = false; // Flag to track if user has scrolled down
+        
+        function initSlideshow() {
+            console.log('Initializing slideshow...');
+            slides = document.querySelectorAll('.trailer-slide');
+            console.log('Found slides:', slides.length);
+            
+            // Debug: Log details of each slide
+            slides.forEach((slide, index) => {
+                const title = slide.dataset.title;
+                const movieId = slide.dataset.movieId;
+                const trailerUrl = slide.dataset.trailerUrl;
+                console.log(`Slide ${index}: ${title} (ID: ${movieId}) - Trailer: ${trailerUrl}`);
+            });
+            
+            // Debug: Check if there are duplicate slides
+            const titles = Array.from(slides).map(slide => slide.dataset.title);
+            const uniqueTitles = [...new Set(titles)];
+            console.log('All titles:', titles);
+            console.log('Unique titles:', uniqueTitles);
+            console.log('Has duplicates:', titles.length !== uniqueTitles.length);
+            
+            if (slides.length === 0) {
+                console.log('No slides found, retrying...');
+                setTimeout(initSlideshow, 500);
+                return;
+            }
+            
+            // Ensure first slide is active
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === 0) {
+                    slide.classList.add('active');
+                }
+            });
+            
+            console.log('Starting slideshow...');
+            // Start auto-play immediately only if user hasn't scrolled
+            setTimeout(() => {
+                if (!isUserScrolled && window.scrollY <= 50) {
+                    startSlideshow();
+                    // Auto-play first trailer after slideshow starts
+                    // setTimeout(() => {
+                    //     autoPlayFirstTrailer();
+                    // }, 2000); // Delay để slideshow hiển thị trước
+                } else {
+                    console.log('Auto-play disabled - user has scrolled or at bottom of page');
+                }
+            }, 200); // Small delay to ensure DOM is ready
+            
+            // Pause on hover
+            const slideshow = document.getElementById('trailerSlideshow');
+            if (slideshow) {
+                slideshow.addEventListener('mouseenter', pauseSlideshow);
+                slideshow.addEventListener('mouseleave', resumeSlideshow);
+            }
+        }
+        
+        function autoPlayFirstTrailer() {
+            console.log('Auto-playing first trailer...');
+            const firstSlide = slides[0];
+            const trailerUrl = firstSlide.dataset.trailerUrl;
+            
+            if (trailerUrl && trailerUrl.trim() !== '') {
+                // Pause slideshow
+                pauseSlideshow();
+                
+                // Hide slideshow
+                const slideshow = document.getElementById('trailerSlideshow');
+                slideshow.style.display = 'none';
+                
+                // Check if it's YouTube embed
+                if (trailerUrl.includes('youtube.com/embed/')) {
+                    // Create YouTube iframe
+                    const youtubeContainer = document.createElement('div');
+                    youtubeContainer.className = 'youtube-container';
+                    youtubeContainer.style.cssText = 'position: relative; width: 100%; height: 500px; border-radius: 20px; overflow: hidden;';
+                    
+                    const iframe = document.createElement('iframe');
+                    iframe.src = trailerUrl + '?autoplay=1&rel=0&mute=0';
+                    iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+                    iframe.allow = 'autoplay; encrypted-media';
+                    iframe.allowFullscreen = true;
+                    
+                    youtubeContainer.appendChild(iframe);
+                    
+                    // Show back button
+                    const backBtn = document.createElement('button');
+                    backBtn.className = 'back-btn position-absolute';
+                    backBtn.style.cssText = 'top: 20px; right: 20px; z-index: 1000;';
+                    backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>Quay lại';
+                    backBtn.onclick = function() {
+                        youtubeContainer.remove();
+                        slideshow.style.display = 'block';
+                        startSlideshow();
+                    };
+                    // Add hover effects
+                    backBtn.onmouseover = () => {
+                        backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 1) 0%, rgba(247, 147, 30, 1) 100%)';
+                        backBtn.style.transform = 'translateY(-2px) scale(1.05)';
+                        backBtn.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.6)';
+                        backBtn.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    };
+                    backBtn.onmouseout = () => {
+                        backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%)';
+                        backBtn.style.transform = 'translateY(0) scale(1)';
+                        backBtn.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
+                        backBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    };
+                    youtubeContainer.appendChild(backBtn);
+                    
+                    slideshow.parentElement.appendChild(youtubeContainer);
+                } else {
+                    // Regular video
+                    const video = document.getElementById('mainTrailer');
+                    const source = video.querySelector('source');
+                    
+                    video.style.display = 'block';
+                    source.src = trailerUrl;
+                    video.load();
+                    video.play();
+                    
+                    // Show back button
+                    const backBtn = document.createElement('button');
+                    backBtn.className = 'back-btn position-absolute';
+                    backBtn.style.cssText = 'top: 20px; right: 20px; z-index: 1000;';
+                    backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>Quay lại';
+                    backBtn.onclick = function() {
+                        video.pause();
+                        video.style.display = 'none';
+                        slideshow.style.display = 'block';
+                        startSlideshow();
+                        backBtn.remove();
+                    };
+                    // Add hover effects
+                    backBtn.onmouseover = () => {
+                        backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 1) 0%, rgba(247, 147, 30, 1) 100%)';
+                        backBtn.style.transform = 'translateY(-2px) scale(1.05)';
+                        backBtn.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.6)';
+                        backBtn.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    };
+                    backBtn.onmouseout = () => {
+                        backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%)';
+                        backBtn.style.transform = 'translateY(0) scale(1)';
+                        backBtn.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
+                        backBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    };
+                    video.parentElement.appendChild(backBtn);
+                }
+            }
+        }
+        
+        function startSlideshow() {
+            console.log('Starting slideshow...');
+            if (slideshowInterval) clearInterval(slideshowInterval);
+            slideshowInterval = setInterval(() => {
+                console.log('Auto-advancing slide...');
+                nextSlide();
+            }, 4000); // Change slide every 4 seconds for better viewing experience
+            isPlaying = true;
+            updatePlayPauseButton();
+            console.log('Slideshow started, interval:', slideshowInterval);
+        }
+        
+        function pauseSlideshow() {
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+            }
+            isPlaying = false;
+            updatePlayPauseButton();
+        }
+        
+        function resumeSlideshow() {
+            if (!isPlaying) {
+                startSlideshow();
+            }
+        }
+        
+        function toggleSlideshow() {
+            if (isPlaying) {
+                pauseSlideshow();
+            } else {
+                startSlideshow();
+            }
+        }
+        
+        function updatePlayPauseButton() {
+            const btn = document.getElementById('playPauseBtn');
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (isPlaying) {
+                    icon.className = 'fas fa-pause';
+                } else {
+                    icon.className = 'fas fa-play';
+                }
+            }
+        }
+        
+        function goToSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+            
+            // Remove active class from current slide
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('prev');
+            
+            // Add active class to new slide
+            currentSlide = index;
+            slides[currentSlide].classList.remove('prev');
+            slides[currentSlide].classList.add('active');
+            
+            // Update nav dots
+            document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+            
+            // Restart slideshow
+            startSlideshow();
+        }
+        
+        function nextSlide() {
+            console.log('nextSlide called, currentSlide:', currentSlide, 'slides.length:', slides.length);
+            const nextIndex = (currentSlide + 1) % slides.length;
+            console.log('Going to slide:', nextIndex);
+            goToSlide(nextIndex);
+        }
+        
+        function previousSlide() {
+            const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prevIndex);
+        }
+        
+        function playTrailer(type) {
+            if (type === 'main') {
+                const currentSlideElement = slides[currentSlide];
+                const trailerUrl = currentSlideElement.dataset.trailerUrl;
+                const title = currentSlideElement.dataset.title;
+                
+                if (trailerUrl && trailerUrl.trim() !== '') {
+                    const slideshow = document.getElementById('trailerSlideshow');
+                    
+                    // Pause slideshow
+                    pauseSlideshow();
+                    
+                    // Hide slideshow
+                    slideshow.style.display = 'none';
+                    
+                    // Check if it's YouTube embed
+                    if (trailerUrl.includes('youtube.com/embed/')) {
+                        // Create YouTube iframe
+                        const youtubeContainer = document.createElement('div');
+                        youtubeContainer.className = 'youtube-container';
+                        youtubeContainer.style.cssText = 'position: relative; width: 100%; height: 400px; border-radius: 20px; overflow: hidden;';
+                        
+                        const iframe = document.createElement('iframe');
+                        iframe.src = trailerUrl + '?autoplay=1&rel=0';
+                        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+                        iframe.allow = 'autoplay; encrypted-media';
+                        iframe.allowFullscreen = true;
+                        
+                        youtubeContainer.appendChild(iframe);
+                        
+                        // Show back button
+                        const backBtn = document.createElement('button');
+                        backBtn.className = 'back-btn position-absolute';
+                        backBtn.style.cssText = 'top: 20px; right: 20px; z-index: 1000;';
+                        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>Quay lại';
+                        backBtn.onclick = function() {
+                            youtubeContainer.remove();
+                            slideshow.style.display = 'block';
+                            startSlideshow();
+                        };
+                        youtubeContainer.appendChild(backBtn);
+                        
+                        slideshow.parentElement.appendChild(youtubeContainer);
+                    } else {
+                        // Regular video
+                        const video = document.getElementById('mainTrailer');
+                        const source = video.querySelector('source');
+                        
+                        video.style.display = 'block';
+                        source.src = trailerUrl;
+                        video.load();
+                        video.play();
+                        
+                        // Show back button
+                        const backBtn = document.createElement('button');
+                        backBtn.className = 'back-btn position-absolute';
+                        backBtn.style.cssText = 'top: 20px; right: 20px; z-index: 1000;';
+                        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>Quay lại';
+                        backBtn.onclick = function() {
+                            video.pause();
+                            video.style.display = 'none';
+                            slideshow.style.display = 'block';
+                            startSlideshow();
+                            backBtn.remove();
+                        };
+                        video.parentElement.appendChild(backBtn);
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Thông báo',
+                        text: 'Trailer cho phim này chưa có sẵn',
+                        confirmButtonText: 'Đóng',
+                        confirmButtonColor: '#ff6b35',
+                        allowOutsideClick: true,
+                        allowEscapeKey: true
+                    });
+                }
+            }
+        }
+        
+        function selectTrailer(movieId, title, description, trailerUrl) {
+            // Update active state in sidebar
+            document.querySelectorAll('.trailer-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Find and go to corresponding slide
+            const slideIndex = Array.from(slides).findIndex(slide => 
+                slide.dataset.movieId === movieId
+            );
+            
+            if (slideIndex !== -1) {
+                goToSlide(slideIndex);
+            }
+        }
+        
+        // Force start slideshow function
+        function forceStartSlideshow() {
+            console.log('Force starting slideshow...');
+            initSlideshow();
+            
+            // If still not working after 1 second, try again
+            setTimeout(() => {
+                if (!isPlaying || slideshowInterval === null) {
+                    console.log('Slideshow not started, retrying...');
+                    initSlideshow();
+                }
+            }, 1000);
+        }
+        
+        // Scroll detection - VÔ HIỆU HÓA AUTO-PLAY KHI SCROLL XUỐNG
+        function handleScroll() {
+            const slideshow = document.getElementById('trailerSlideshow');
+            if (slideshow) {
+                const slideshowRect = slideshow.getBoundingClientRect();
+                const isVisible = slideshowRect.top < window.innerHeight && slideshowRect.bottom > 0;
+                
+                // Nếu người dùng đã scroll xuống, VÔ HIỆU HÓA HOÀN TOÀN auto-play
+                if (window.scrollY > 50) {
+                    isUserScrolled = true;
+                    if (isPlaying) {
+                        pauseSlideshow();
+                        console.log('User scrolled down - AUTO-PLAY DISABLED');
+                    }
+                    // Hiển thị nút enable auto-play
+                    const enableBtn = document.getElementById('autoPlayEnable');
+                    if (enableBtn) {
+                        enableBtn.style.display = 'block';
+                    }
+                    // Không bao giờ tự động resume khi đã scroll xuống
+                    return;
+                } else {
+                    // Ẩn nút enable auto-play khi ở đầu trang
+                    const enableBtn = document.getElementById('autoPlayEnable');
+                    if (enableBtn) {
+                        enableBtn.style.display = 'none';
+                    }
+                }
+                
+                // Chỉ cho phép auto-play khi ở đầu trang và chưa scroll
+                if (window.scrollY <= 50 && !isUserScrolled) {
+                    if (!isPlaying) {
+                        startSlideshow();
+                        console.log('At top of page - AUTO-PLAY ENABLED');
+                    }
+                }
+            }
+        }
+        
+        // Initialize slideshow on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            forceStartSlideshow();
+            
+            // Add scroll listener
+            window.addEventListener('scroll', handleScroll);
+        });
+        
+        // Also initialize when window loads (backup)
+        window.addEventListener('load', function() {
+            console.log('Window Loaded');
+            if (!isPlaying || slideshowInterval === null) {
+                forceStartSlideshow();
+            }
+        });
+        
+        // Additional backup - start after 2 seconds
+        setTimeout(() => {
+            console.log('Backup initialization after 2 seconds');
+            if (!isPlaying || slideshowInterval === null) {
+                forceStartSlideshow();
+            }
+        }, 2000);
+        
         // book
         function bookMovie(movieTitle) {
             const button = event.target;
@@ -1011,5 +2303,213 @@
                 button.disabled = false;
             }, 800);
         }
+        
+        // Enhanced auto-play function with better UX
+        function autoPlayFirstTrailer() {
+            console.log('Auto-playing first trailer...');
+            
+            // Kiểm tra xem đã có video đang phát chưa
+            if (isVideoPlaying) {
+                console.log('Video is already playing, skipping...');
+                return;
+            }
+            
+            // Kiểm tra xem đã có video container chưa
+            const existingVideo = document.querySelector('.trailer-video-container');
+            if (existingVideo) {
+                console.log('Video container already exists, removing...');
+                existingVideo.remove();
+            }
+            
+            // Set flag
+            isVideoPlaying = true;
+            
+            const slideshow = document.getElementById('trailerSlideshow');
+            if (slideshow) {
+                const activeSlide = slideshow.querySelector('.trailer-slide.active');
+                if (activeSlide) {
+                    const trailerUrl = activeSlide.dataset.trailerUrl;
+                    const title = activeSlide.dataset.title;
+                    
+                    // Pause slideshow
+                    pauseSlideshow();
+                    
+                    // Hide slideshow
+                    slideshow.style.display = 'none';
+                    
+                    if (trailerUrl.includes('youtube.com/embed/')) {
+                        // Enhanced YouTube video container
+                        const youtubeContainer = document.createElement('div');
+                        youtubeContainer.className = 'trailer-video-container';
+                        youtubeContainer.style.cssText = `
+                            position: relative;
+                            width: 100%;
+                            height: 500px;
+                            background: #000;
+                            border-radius: 20px;
+                            overflow: hidden;
+                            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                        `;
+                        
+                        // Enhanced controls
+                        const controlsContainer = document.createElement('div');
+                        controlsContainer.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            z-index: 10;
+                            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+                            padding: 20px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-start;
+                        `;
+                        
+                        // Back button
+                        const backBtn = document.createElement('button');
+                        backBtn.innerHTML = '← Quay lại Slideshow';
+                        backBtn.style.cssText = `
+                            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%);
+                            color: white;
+                            border: none;
+                            padding: 14px 28px;
+                            border-radius: 30px;
+                            cursor: pointer;
+                            font-size: 15px;
+                            font-weight: 700;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+                            backdrop-filter: blur(10px);
+                            border: 2px solid rgba(255, 255, 255, 0.2);
+                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                            letter-spacing: 0.5px;
+                        `;
+                        backBtn.onclick = function() {
+                            youtubeContainer.remove();
+                            slideshow.style.display = 'block';
+                            isVideoPlaying = false; // Reset flag
+                            startSlideshow();
+                        };
+                        backBtn.onmouseover = () => {
+                            backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 1) 0%, rgba(247, 147, 30, 1) 100%)';
+                            backBtn.style.transform = 'translateY(-3px) scale(1.05)';
+                            backBtn.style.boxShadow = '0 8px 25px rgba(255, 107, 53, 0.6)';
+                            backBtn.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                        };
+                        backBtn.onmouseout = () => {
+                            backBtn.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%)';
+                            backBtn.style.transform = 'translateY(0) scale(1)';
+                            backBtn.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.4)';
+                            backBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        };
+                        
+                        // Skip button
+                        const skipBtn = document.createElement('button');
+                        skipBtn.innerHTML = '⏭️ Bỏ qua';
+                        skipBtn.style.cssText = `
+                            background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
+                            color: white;
+                            border: 2px solid rgba(255, 255, 255, 0.3);
+                            padding: 14px 28px;
+                            border-radius: 30px;
+                            cursor: pointer;
+                            font-size: 15px;
+                            font-weight: 700;
+                            transition: all 0.3s ease;
+                            backdrop-filter: blur(15px);
+                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                            letter-spacing: 0.5px;
+                            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+                        `;
+                        skipBtn.onclick = function() {
+                            // Auto-play next trailer
+                            autoPlayNextTrailer();
+                        };
+                        skipBtn.onmouseover = () => {
+                            skipBtn.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.25) 100%)';
+                            skipBtn.style.transform = 'translateY(-3px) scale(1.05)';
+                            skipBtn.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                            skipBtn.style.boxShadow = '0 6px 20px rgba(255, 255, 255, 0.2)';
+                        };
+                        skipBtn.onmouseout = () => {
+                            skipBtn.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%)';
+                            skipBtn.style.transform = 'translateY(0) scale(1)';
+                            skipBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                            skipBtn.style.boxShadow = '0 4px 15px rgba(255, 255, 255, 0.1)';
+                        };
+                        
+                        controlsContainer.appendChild(backBtn);
+                        controlsContainer.appendChild(skipBtn);
+                        youtubeContainer.appendChild(controlsContainer);
+                        
+                        // YouTube iframe with better parameters
+                        const iframe = document.createElement('iframe');
+                        iframe.src = trailerUrl + '?autoplay=1&rel=0&mute=0&controls=1&showinfo=0&modestbranding=1';
+                        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
+                        iframe.allow = 'autoplay; encrypted-media; fullscreen';
+                        youtubeContainer.appendChild(iframe);
+                        
+                        slideshow.parentElement.appendChild(youtubeContainer);
+                    }
+                }
+            }
+        }
+        
+        function autoPlayNextTrailer() {
+            console.log('Auto-playing next trailer...');
+            // Remove current video
+            const currentVideo = document.querySelector('.trailer-video-container');
+            if (currentVideo) {
+                currentVideo.remove();
+            }
+            
+            // Reset flag
+            isVideoPlaying = false;
+            
+            // Go to next slide
+            nextSlide();
+            
+            // Auto-play after a short delay
+            // setTimeout(() => {
+            //     autoPlayFirstTrailer();
+            // }, 500);
+        }
+        
+        // Hàm bật lại auto-play
+        function enableAutoPlay() {
+            console.log('Enabling auto-play...');
+            isUserScrolled = false;
+            startSlideshow();
+            
+            // Ẩn nút enable
+            const enableBtn = document.getElementById('autoPlayEnable');
+            if (enableBtn) {
+                enableBtn.style.display = 'none';
+            }
+            
+            // Auto-play trailer sau 1 giây
+            // setTimeout(() => {
+            //     autoPlayFirstTrailer();
+            // }, 1000);
+        }
+        
+        // // Demo section để so sánh nút cũ và mới
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Tạo demo section
+        //     const demoSection = document.createElement('div');
+        //     demoSection.className = 'demo-section';
+        //     demoSection.innerHTML = `
+        //         <h6>So sánh nút "Quay lại":</h6>
+        //         <a href="#" class="demo-old-btn">← Quay lại (Cũ)</a>
+        //         <button class="back-btn">Quay lại (Mới)</button>
+        //     `;
+        //     document.body.appendChild(demoSection);
+            
+        //     // Ẩn demo sau 10 giây
+        //     setTimeout(() => {
+        //         demoSection.style.display = 'none';
+        //     }, 10000);
+        // });
     </script>
 } 
