@@ -109,13 +109,13 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             try
             {
                 // Log dữ liệu đầu vào
-                Console.WriteLine($"Register attempt - Username: {model.Username}, Email: {model.Email}");
+                // Console.WriteLine($"Register attempt - Username: {model.Username}, Email: {model.Email}");
                 
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                     var errorMessage = string.Join(", ", errors);
-                    Console.WriteLine($"ModelState errors: {errorMessage}");
+                    // Console.WriteLine($"ModelState errors: {errorMessage}");
                     return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ: " + errorMessage });
                 }
 
@@ -129,18 +129,18 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     Status = "hoatdong" // Theo constraint database
                 };
 
-                Console.WriteLine($"Creating user object: {user.Username}, {user.Email}");
+                // Console.WriteLine($"Creating user object: {user.Username}, {user.Email}");
 
                 var result = await _authService.RegisterUserAsync(user);
                 
                 if (result)
                 {
-                    Console.WriteLine($"✅ User {user.Username} registered successfully");
+                    // Console.WriteLine($"✅ User {user.Username} registered successfully");
                     return Json(new { success = true, message = "Đăng ký thành công" });
                 }
                 else
                 {
-                    Console.WriteLine($"❌ User {user.Username} registration failed");
+                    // Console.WriteLine($"❌ User {user.Username} registration failed");
                     
                     // Kiểm tra cụ thể lỗi gì
                     var existingUserByUsername = await _context.Users
@@ -151,27 +151,27 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
 
                     if (existingUserByUsername != null)
                     {
-                        Console.WriteLine($"Username {model.Username} already exists");
+                        // Console.WriteLine($"Username {model.Username} already exists");
                         return Json(new { success = false, message = "Tên đăng nhập đã tồn tại" });
                     }
                     else if (existingUserByEmail != null)
                     {
-                        Console.WriteLine($"Email {model.Email} already exists");
+                        // Console.WriteLine($"Email {model.Email} already exists");
                         return Json(new { success = false, message = "Email đã được sử dụng" });
                     }
                     else
                     {
-                        Console.WriteLine("Unknown registration error");
+                        // Console.WriteLine("Unknown registration error");
                         return Json(new { success = false, message = "Có lỗi xảy ra khi đăng ký" });
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception in Register: {ex.Message}");
+                // Console.WriteLine($"❌ Exception in Register: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"❌ Inner exception: {ex.InnerException.Message}");
+                    // Console.WriteLine($"❌ Inner exception: {ex.InnerException.Message}");
                 }
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }

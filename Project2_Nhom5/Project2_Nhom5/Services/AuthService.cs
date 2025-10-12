@@ -29,7 +29,7 @@ namespace Project2_Nhom5.Services
             {
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
-                    //Console.WriteLine("AuthService: Username or password is null or empty");
+                    //// Console.WriteLine("AuthService: Username or password is null or empty");
                     return null;
                 }
 
@@ -38,29 +38,29 @@ namespace Project2_Nhom5.Services
 
                 if (user == null)
                 {
-                    //Console.WriteLine($"AuthService: User '{username}' not found");
+                    //// Console.WriteLine($"AuthService: User '{username}' not found");
                     return null;
                 }
 
-                //Console.WriteLine($"AuthService: Found user '{username}', attempting password verification");
+                //// Console.WriteLine($"AuthService: Found user '{username}', attempting password verification");
                 
                 if (VerifyPassword(password, user.Password))
                 {
-                    //Console.WriteLine($"AuthService: Password verification successful for user '{username}'");
+                    //// Console.WriteLine($"AuthService: Password verification successful for user '{username}'");
                     return user;
                 }
                 else
                 {
-                    //Console.WriteLine($"AuthService: Password verification failed for user '{username}'");
+                    //// Console.WriteLine($"AuthService: Password verification failed for user '{username}'");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"AuthService: Error in AuthenticateUserAsync: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Error in AuthenticateUserAsync: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    //Console.WriteLine($"AuthService: Inner exception: {ex.InnerException.Message}");
+                    //// Console.WriteLine($"AuthService: Inner exception: {ex.InnerException.Message}");
                 }
                 return null;
             }
@@ -70,7 +70,7 @@ namespace Project2_Nhom5.Services
         {
             try
             {
-                //Console.WriteLine($"AuthService: Starting registration for {user.Username}");
+                //// Console.WriteLine($"AuthService: Starting registration for {user.Username}");
                 
                 // Kiểm tra username đã tồn tại chưa
                 var existingUserByUsername = await _context.Users
@@ -78,7 +78,7 @@ namespace Project2_Nhom5.Services
 
                 if (existingUserByUsername != null)
                 {
-                    //Console.WriteLine($"AuthService: Username {user.Username} already exists");
+                    //// Console.WriteLine($"AuthService: Username {user.Username} already exists");
                     return false; // Username đã tồn tại
                 }
 
@@ -88,15 +88,15 @@ namespace Project2_Nhom5.Services
 
                 if (existingUserByEmail != null)
                 {
-                    //Console.WriteLine($"AuthService: Email {user.Email} already exists");
+                    //// Console.WriteLine($"AuthService: Email {user.Email} already exists");
                     return false; // Email đã tồn tại
                 }
 
-                //Console.WriteLine($"AuthService: No conflicts found, proceeding with registration");
+                //// Console.WriteLine($"AuthService: No conflicts found, proceeding with registration");
 
                 // Hash password trước khi lưu
                 user.Password = HashPassword(user.Password);
-                //Console.WriteLine($"AuthService: Password hashed successfully");
+                //// Console.WriteLine($"AuthService: Password hashed successfully");
                 
                 // Set default values theo constraint của database
                 user.Status = "hoatdong"; // Theo constraint: 'hoatdong' hoặc 'khonghoatdong'
@@ -105,26 +105,26 @@ namespace Project2_Nhom5.Services
                     user.Role = "NguoiDung"; // Theo constraint: 'NguoiDung', 'Admin', 'DaiLy'
                 }
 
-                //Console.WriteLine($"AuthService: Adding user to context");
+                //// Console.WriteLine($"AuthService: Adding user to context");
                 _context.Users.Add(user);
                 
-                //Console.WriteLine($"AuthService: Saving changes to database");
+                //// Console.WriteLine($"AuthService: Saving changes to database");
                 await _context.SaveChangesAsync();
                 
-                //Console.WriteLine($"AuthService: User {user.Username} registered successfully");
+                //// Console.WriteLine($"AuthService: User {user.Username} registered successfully");
                 return true;
             }
             catch (Exception ex)
             {
                 // Log lỗi chi tiết
-                //Console.WriteLine($"❌ AuthService: Lỗi khi đăng ký user: {ex.Message}");
+                //// Console.WriteLine($"❌ AuthService: Lỗi khi đăng ký user: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    //Console.WriteLine($"❌ AuthService: Inner exception: {ex.InnerException.Message}");
+                    //// Console.WriteLine($"❌ AuthService: Inner exception: {ex.InnerException.Message}");
                 }
                 
                 // Log stack trace để debug
-                //Console.WriteLine($"❌ AuthService: Stack trace: {ex.StackTrace}");
+                //// Console.WriteLine($"❌ AuthService: Stack trace: {ex.StackTrace}");
                 
                 return false;
             }
@@ -143,12 +143,12 @@ namespace Project2_Nhom5.Services
                 var salt = BCrypt.Net.BCrypt.GenerateSalt(12);
                 var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
                 
-                //Console.WriteLine($"AuthService: Password hashed successfully with salt length: {salt.Length}");
+                //// Console.WriteLine($"AuthService: Password hashed successfully with salt length: {salt.Length}");
                 return hashedPassword;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"AuthService: Error hashing password: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Error hashing password: {ex.Message}");
                 throw;
             }
         }
@@ -160,14 +160,14 @@ namespace Project2_Nhom5.Services
                 // Check if hashedPassword is null or empty
                 if (string.IsNullOrEmpty(hashedPassword))
                 {
-                    //Console.WriteLine("AuthService: Hashed password is null or empty");
+                    //// Console.WriteLine("AuthService: Hashed password is null or empty");
                     return false;
                 }
 
                 // Check if hashedPassword looks like a valid BCrypt hash
                 if (!hashedPassword.StartsWith("$2") || hashedPassword.Length < 60)
                 {
-                    //Console.WriteLine($"AuthService: Invalid BCrypt hash format: {hashedPassword}");
+                    //// Console.WriteLine($"AuthService: Invalid BCrypt hash format: {hashedPassword}");
                     return false;
                 }
 
@@ -175,13 +175,13 @@ namespace Project2_Nhom5.Services
             }
             catch (BCrypt.Net.SaltParseException ex)
             {
-                //Console.WriteLine($"AuthService: BCrypt salt parsing error: {ex.Message}");
-                //Console.WriteLine($"AuthService: Problematic hash: {hashedPassword}");
+                //// Console.WriteLine($"AuthService: BCrypt salt parsing error: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Problematic hash: {hashedPassword}");
                 return false;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"AuthService: Unexpected error in VerifyPassword: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Unexpected error in VerifyPassword: {ex.Message}");
                 return false;
             }
         }
@@ -201,16 +201,16 @@ namespace Project2_Nhom5.Services
                         user.Password.Length < 60)
                     {
                         usersWithInvalidPasswords.Add(user);
-                        //Console.WriteLine($"AuthService: Found user with invalid password hash: {user.Username}");
+                        //// Console.WriteLine($"AuthService: Found user with invalid password hash: {user.Username}");
                     }
                 }
                 
-                //Console.WriteLine($"AuthService: Found {usersWithInvalidPasswords.Count} users with invalid password hashes");
+                //// Console.WriteLine($"AuthService: Found {usersWithInvalidPasswords.Count} users with invalid password hashes");
                 return usersWithInvalidPasswords;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"AuthService: Error getting users with invalid passwords: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Error getting users with invalid passwords: {ex.Message}");
                 return usersWithInvalidPasswords;
             }
         }
@@ -222,7 +222,7 @@ namespace Project2_Nhom5.Services
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
-                    //Console.WriteLine($"AuthService: User with ID {userId} not found");
+                    //// Console.WriteLine($"AuthService: User with ID {userId} not found");
                     return false;
                 }
 
@@ -231,15 +231,15 @@ namespace Project2_Nhom5.Services
                 
                 await _context.SaveChangesAsync();
                 
-                //Console.WriteLine($"AuthService: Successfully fixed password for user {user.Username}");
-                //Console.WriteLine($"AuthService: Old hash: {oldPassword}");
-                //Console.WriteLine($"AuthService: New hash: {user.Password}");
+                //// Console.WriteLine($"AuthService: Successfully fixed password for user {user.Username}");
+                //// Console.WriteLine($"AuthService: Old hash: {oldPassword}");
+                //// Console.WriteLine($"AuthService: New hash: {user.Password}");
                 
                 return true;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"AuthService: Error fixing password for user {userId}: {ex.Message}");
+                //// Console.WriteLine($"AuthService: Error fixing password for user {userId}: {ex.Message}");
                 return false;
             }
         }

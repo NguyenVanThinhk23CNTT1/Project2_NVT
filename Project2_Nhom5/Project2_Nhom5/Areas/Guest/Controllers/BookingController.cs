@@ -267,7 +267,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             catch (Exception ex)
             {
                 // Log the error
-                Console.WriteLine($"Error in Payment action: {ex.Message}");
+                // Console.WriteLine($"Error in Payment action: {ex.Message}");
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -317,26 +317,26 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine("=== ProcessPayment Debug ===");
-                Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
-                Console.WriteLine($"UserId from cookie: {Request.Cookies["userId"]}");
-                Console.WriteLine($"Username from cookie: {Request.Cookies["username"]}");
-                Console.WriteLine($"Role from cookie: {Request.Cookies["role"]}");
+                // Console.WriteLine("=== ProcessPayment Debug ===");
+                // Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
+                // Console.WriteLine($"UserId from cookie: {Request.Cookies["userId"]}");
+                // Console.WriteLine($"Username from cookie: {Request.Cookies["username"]}");
+                // Console.WriteLine($"Role from cookie: {Request.Cookies["role"]}");
                 
                 var result = await CreatePendingTickets(request);
                 
-                Console.WriteLine($"Result type: {result.GetType().Name}");
+                // Console.WriteLine($"Result type: {result.GetType().Name}");
                 if (result is JsonResult jsonResult)
                 {
-                    Console.WriteLine($"Json result: {System.Text.Json.JsonSerializer.Serialize(jsonResult.Value)}");
+                    // Console.WriteLine($"Json result: {System.Text.Json.JsonSerializer.Serialize(jsonResult.Value)}");
                 }
                 
                 return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ProcessPayment Exception: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // Console.WriteLine($"ProcessPayment Exception: {ex.Message}");
+                // Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 
                 return Json(new { 
                     success = false, 
@@ -351,32 +351,32 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePendingTickets([FromBody] PaymentRequest request)
         {
-            Console.WriteLine("=== CreatePendingTickets Debug ===");
-            Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
+            // Console.WriteLine("=== CreatePendingTickets Debug ===");
+            // Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
             
             var userId = Request.Cookies["userId"];
-            Console.WriteLine($"UserId from cookie: {userId}");
+            // Console.WriteLine($"UserId from cookie: {userId}");
             
             if (string.IsNullOrEmpty(userId))
             {
-                Console.WriteLine("No userId found in cookies");
+                // Console.WriteLine("No userId found in cookies");
                 return Json(new { success = false, message = "Vui lòng đăng nhập để đặt vé" });
             }
 
             try
             {
-                Console.WriteLine("Starting database transaction...");
+                // Console.WriteLine("Starting database transaction...");
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
                 // Kiểm tra ghế có còn trống không
-                Console.WriteLine($"Checking seats for showtime {request.ShowtimeId}, seats: {string.Join(",", request.SeatIds)}");
+                // Console.WriteLine($"Checking seats for showtime {request.ShowtimeId}, seats: {string.Join(",", request.SeatIds)}");
                 var bookedSeats = await _context.Tickets
                     .Where(t => t.ShowtimeId == request.ShowtimeId && 
                                request.SeatIds.Contains(t.SeatId) && 
                                t.Status != "DaHuy")
                     .ToListAsync();
 
-                Console.WriteLine($"Found {bookedSeats.Count} booked seats");
+                // Console.WriteLine($"Found {bookedSeats.Count} booked seats");
 
                 if (bookedSeats.Any())
                 {
@@ -386,11 +386,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 var userIdInt = int.Parse(userId);
                 var tickets = new List<Ticket>();
 
-                Console.WriteLine("Creating tickets...");
+                // Console.WriteLine("Creating tickets...");
                 // Tạo vé cho từng ghế với trạng thái ChoXuLy
                 foreach (var seatId in request.SeatIds)
                 {
-                    Console.WriteLine($"Processing seat {seatId}");
+                    // Console.WriteLine($"Processing seat {seatId}");
                     var seat = await _context.Seats.FindAsync(seatId);
                     var price = (seat?.SeatType ?? "thuong") == "VIP" ? 95000 : 75000;
 
@@ -404,19 +404,19 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     };
 
                     tickets.Add(ticket);
-                    Console.WriteLine($"Created ticket for seat {seatId}, price: {price}");
+                    // Console.WriteLine($"Created ticket for seat {seatId}, price: {price}");
                 }
 
-                Console.WriteLine($"Adding {tickets.Count} tickets to context");
+                // Console.WriteLine($"Adding {tickets.Count} tickets to context");
                 _context.Tickets.AddRange(tickets);
                 
-                Console.WriteLine("Saving changes...");
+                // Console.WriteLine("Saving changes...");
                 await _context.SaveChangesAsync();
                 
-                Console.WriteLine("Committing transaction...");
+                // Console.WriteLine("Committing transaction...");
                 await transaction.CommitAsync();
 
-                Console.WriteLine("Transaction committed successfully");
+                // Console.WriteLine("Transaction committed successfully");
 
                 // Tạo mã đặt vé
                 var bookingCode = $"BK{DateTime.Now:yyyyMMdd}{tickets.First().TicketId:D6}";
@@ -430,15 +430,15 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     bookingCode = bookingCode
                 };
 
-                Console.WriteLine($"Returning result: {System.Text.Json.JsonSerializer.Serialize(result)}");
+                // Console.WriteLine($"Returning result: {System.Text.Json.JsonSerializer.Serialize(result)}");
                 return Json(result);
             }
             catch (Exception ex)
             {
                 // Log chi tiết lỗi để debug
-                Console.WriteLine($"Error in CreatePendingTickets: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // Console.WriteLine($"Error in CreatePendingTickets: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 
                 string userMessage = "Có lỗi xảy ra khi đặt vé";
                 
@@ -469,7 +469,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     innerError = ex.InnerException?.Message
                 };
                 
-                Console.WriteLine($"Returning error: {System.Text.Json.JsonSerializer.Serialize(errorResult)}");
+                // Console.WriteLine($"Returning error: {System.Text.Json.JsonSerializer.Serialize(errorResult)}");
                 return Json(errorResult);
             }
         }
@@ -515,7 +515,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error loading payment: {ex.Message}");
+                        // Console.WriteLine($"Error loading payment: {ex.Message}");
                         // Tiếp tục với payment = null
                     }
                 }
@@ -543,8 +543,8 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Confirmation: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Error in Confirmation: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
                 
                 TempData["ErrorMessage"] = "Có lỗi xảy ra khi tải thông tin vé. Vui lòng thử lại.";
                 return RedirectToAction("History", "Booking");
@@ -753,10 +753,10 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             try
             {
                 // Debug: Log thông tin request
-                Console.WriteLine($"ProcessSelectedPayments - UserId: {userId}");
-                Console.WriteLine($"ProcessSelectedPayments - SelectedTicketIds: {string.Join(",", request.SelectedTicketIds)}");
-                Console.WriteLine($"ProcessSelectedPayments - PaymentMethod: {request.PaymentMethod}");
-                Console.WriteLine($"ProcessSelectedPayments - DiscountCode: {request.DiscountCode}");
+                // Console.WriteLine($"ProcessSelectedPayments - UserId: {userId}");
+                // Console.WriteLine($"ProcessSelectedPayments - SelectedTicketIds: {string.Join(",", request.SelectedTicketIds)}");
+                // Console.WriteLine($"ProcessSelectedPayments - PaymentMethod: {request.PaymentMethod}");
+                // Console.WriteLine($"ProcessSelectedPayments - DiscountCode: {request.DiscountCode}");
 
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -767,7 +767,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                                t.Status == "ChoXuLy")
                     .ToListAsync();
 
-                Console.WriteLine($"Found {tickets.Count} tickets to process");
+                // Console.WriteLine($"Found {tickets.Count} tickets to process");
 
                 if (!tickets.Any())
                 {
@@ -784,11 +784,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     if (discount != null)
                     {
                         discountId = discount.DiscountId;
-                        Console.WriteLine($"Found discount: {discount.Code}, ID: {discountId}");
+                        // Console.WriteLine($"Found discount: {discount.Code}, ID: {discountId}");
                     }
                     else
                     {
-                        Console.WriteLine($"Discount not found: {request.DiscountCode}");
+                        // Console.WriteLine($"Discount not found: {request.DiscountCode}");
                     }
                 }
 
@@ -797,11 +797,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 var finalAmount = totalOriginalPrice;
                 var discountAmount = 0m;
                 
-                Console.WriteLine($"Total original price: {totalOriginalPrice}");
+                // Console.WriteLine($"Total original price: {totalOriginalPrice}");
                 
                 if (discountId.HasValue && discount != null)
                 {
-                    Console.WriteLine($"Applying discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
+                    // Console.WriteLine($"Applying discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
                     
                     if (discount.DiscountType == "percentage" || discount.DiscountType == "phantram")
                     {
@@ -814,30 +814,37 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                         finalAmount = Math.Max(0, totalOriginalPrice - discountAmount);
                     }
                     
-                    Console.WriteLine($"Discount amount: {discountAmount}, Final amount: {finalAmount}");
+                    // Console.WriteLine($"Discount amount: {discountAmount}, Final amount: {finalAmount}");
                 }
 
+                // Tính giá của từng vé sau khi áp dụng giảm giá
+                var ticketCount = tickets.Count;
+                var discountPerTicket = discountAmount / ticketCount;
+                var finalPricePerTicket = (finalAmount - discountAmount) / ticketCount + discountPerTicket;
+                
+                // Console.WriteLine($"Ticket count: {ticketCount}, Discount per ticket: {discountPerTicket}, Final price per ticket: {finalPricePerTicket}");
+                
                 // Sử dụng raw SQL để cập nhật vé và tạo payment để tránh trigger conflict
                 foreach (var ticket in tickets)
                 {
-                    Console.WriteLine($"Processing ticket {ticket.TicketId} with final amount: {finalAmount}");
+                    // Console.WriteLine($"Processing ticket {ticket.TicketId} with original price: {ticket.Price}, final price: {finalPricePerTicket}");
                     
                     // Cập nhật vé bằng raw SQL
                     var updateTicketSql = @"
                         UPDATE [Ve] 
                         SET [TrangThai] = 'DaThanhToan',
                             [GiaGoc] = @originalPrice,
-                            [GiaVe] = @finalAmount,
+                            [GiaVe] = @finalPricePerTicket,
                             [MaGiamGia] = @discountId,
-                            [GiaTriGiamGia] = @discountAmount,
+                            [GiaTriGiamGia] = @discountPerTicket,
                             [NgayCapNhat] = @updateDate
                         WHERE [MaVe] = @ticketId";
                     
                     await _context.Database.ExecuteSqlRawAsync(updateTicketSql,
                         new Microsoft.Data.SqlClient.SqlParameter("@originalPrice", ticket.Price),
-                        new Microsoft.Data.SqlClient.SqlParameter("@finalAmount", finalAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@finalPricePerTicket", finalPricePerTicket),
                         new Microsoft.Data.SqlClient.SqlParameter("@discountId", discountId ?? (object)DBNull.Value),
-                        new Microsoft.Data.SqlClient.SqlParameter("@discountAmount", discountAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@discountPerTicket", discountPerTicket),
                         new Microsoft.Data.SqlClient.SqlParameter("@updateDate", DateTime.Now),
                         new Microsoft.Data.SqlClient.SqlParameter("@ticketId", ticket.TicketId));
                     
@@ -847,16 +854,16 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                         VALUES (@amount, @paymentDate, @paymentMethod, @ticketId, @discountId)";
                     
                     await _context.Database.ExecuteSqlRawAsync(insertPaymentSql,
-                        new Microsoft.Data.SqlClient.SqlParameter("@amount", finalAmount),
+                        new Microsoft.Data.SqlClient.SqlParameter("@amount", finalPricePerTicket),
                         new Microsoft.Data.SqlClient.SqlParameter("@paymentDate", DateTime.Now),
                         new Microsoft.Data.SqlClient.SqlParameter("@paymentMethod", request.PaymentMethod),
                         new Microsoft.Data.SqlClient.SqlParameter("@ticketId", ticket.TicketId),
                         new Microsoft.Data.SqlClient.SqlParameter("@discountId", discountId ?? (object)DBNull.Value));
                     
-                    Console.WriteLine($"Updated ticket {ticket.TicketId} and created payment with amount: {finalAmount}");
+                    // Console.WriteLine($"Updated ticket {ticket.TicketId} and created payment with amount: {finalPricePerTicket}");
                 }
                 
-                Console.WriteLine("Committing transaction...");
+                // Console.WriteLine("Committing transaction...");
                 await transaction.CommitAsync();
 
                 // Cập nhật doanh thu cho các suất chiếu
@@ -869,7 +876,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 // Tạo mã đặt vé
                 var bookingCode = $"BK{DateTime.Now:yyyyMMdd}{tickets.First().TicketId:D6}";
 
-                Console.WriteLine($"Payment successful! Booking code: {bookingCode}");
+                // Console.WriteLine($"Payment successful! Booking code: {bookingCode}");
 
                 return Json(new
                 {
@@ -892,9 +899,9 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             catch (Exception ex)
             {
                 // Log chi tiết lỗi
-                Console.WriteLine($"Error in ProcessSelectedPayments: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // Console.WriteLine($"Error in ProcessSelectedPayments: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 
                 string userMessage = "Có lỗi xảy ra khi thanh toán";
                 
@@ -928,9 +935,9 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine($"TestCreatePayment - TicketId: {request.TicketId}");
-                Console.WriteLine($"TestCreatePayment - Amount: {request.Amount}");
-                Console.WriteLine($"TestCreatePayment - PaymentMethod: {request.PaymentMethod}");
+                // Console.WriteLine($"TestCreatePayment - TicketId: {request.TicketId}");
+                // Console.WriteLine($"TestCreatePayment - Amount: {request.Amount}");
+                // Console.WriteLine($"TestCreatePayment - PaymentMethod: {request.PaymentMethod}");
 
                 // Tạo payment đơn giản
                 var payment = new Payment
@@ -942,13 +949,13 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     // DiscountId = null // Tạm thời comment do cột chưa tồn tại
                 };
 
-                Console.WriteLine("Adding payment to context...");
+                // Console.WriteLine("Adding payment to context...");
                 _context.Payments.Add(payment);
                 
-                Console.WriteLine("Saving changes...");
+                // Console.WriteLine("Saving changes...");
                 await _context.SaveChangesAsync();
 
-                Console.WriteLine("Payment created successfully!");
+                // Console.WriteLine("Payment created successfully!");
 
                 return Json(new
                 {
@@ -959,8 +966,8 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"TestCreatePayment Error: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"TestCreatePayment Error: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
                 
                 return Json(new
                 {
@@ -978,11 +985,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine($"=== DebugDiscountApplication ===");
-                Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
+                // Console.WriteLine($"=== DebugDiscountApplication ===");
+                // Console.WriteLine($"Request: {System.Text.Json.JsonSerializer.Serialize(request)}");
                 
                 var userId = Request.Cookies["userId"];
-                Console.WriteLine($"UserId: {userId}");
+                // Console.WriteLine($"UserId: {userId}");
                 
                 // Lấy thông tin vé
                 var tickets = await _context.Tickets
@@ -991,7 +998,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                                t.Status == "ChoXuLy")
                     .ToListAsync();
                 
-                Console.WriteLine($"Found {tickets.Count} tickets");
+                // Console.WriteLine($"Found {tickets.Count} tickets");
                 
                 if (!tickets.Any())
                 {
@@ -1000,7 +1007,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 
                 // Tính giá gốc
                 var totalOriginalPrice = tickets.Sum(t => t.Price);
-                Console.WriteLine($"Total original price: {totalOriginalPrice}");
+                // Console.WriteLine($"Total original price: {totalOriginalPrice}");
                 
                 // Tìm mã giảm giá
                 Discount? discount = null;
@@ -1014,11 +1021,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     if (discount != null)
                     {
                         discountId = discount.DiscountId;
-                        Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
+                        // Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
                     }
                     else
                     {
-                        Console.WriteLine($"Discount not found: {request.DiscountCode}");
+                        // Console.WriteLine($"Discount not found: {request.DiscountCode}");
                     }
                 }
                 
@@ -1039,7 +1046,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                         finalAmount = Math.Max(0, totalOriginalPrice - discountAmount);
                     }
                     
-                    Console.WriteLine($"Discount calculation: {totalOriginalPrice} - {discountAmount} = {finalAmount}");
+                    // Console.WriteLine($"Discount calculation: {totalOriginalPrice} - {discountAmount} = {finalAmount}");
                 }
                 
                 var result = new
@@ -1070,12 +1077,12 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     } : null
                 };
                 
-                Console.WriteLine($"Debug result: {System.Text.Json.JsonSerializer.Serialize(result)}");
+                // Console.WriteLine($"Debug result: {System.Text.Json.JsonSerializer.Serialize(result)}");
                 return Json(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DebugDiscountApplication Error: {ex.Message}");
+                // Console.WriteLine($"DebugDiscountApplication Error: {ex.Message}");
                 return Json(new { 
                     success = false, 
                     message = "Lỗi khi debug mã giảm giá",
@@ -1090,7 +1097,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine($"TestDiscount - Code: {request.DiscountCode}, SubTotal: {request.SubTotal}");
+                // Console.WriteLine($"TestDiscount - Code: {request.DiscountCode}, SubTotal: {request.SubTotal}");
                 
                 var discount = await _context.Discounts
                     .FirstOrDefaultAsync(d => d.Code == request.DiscountCode && d.ExpiryDate >= DateOnly.FromDateTime(DateTime.Today));
@@ -1100,7 +1107,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     return Json(new { success = false, message = "Mã giảm giá không hợp lệ hoặc đã hết hạn" });
                 }
                 
-                Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
+                // Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
                 
                 decimal discountAmount = 0;
                 if (discount.DiscountType == "percentage")
@@ -1114,7 +1121,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 
                 var totalAmount = Math.Max(0, request.SubTotal - discountAmount);
                 
-                Console.WriteLine($"Discount calculation: {request.SubTotal} - {discountAmount} = {totalAmount}");
+                // Console.WriteLine($"Discount calculation: {request.SubTotal} - {discountAmount} = {totalAmount}");
                 
                 return Json(new
                 {
@@ -1136,7 +1143,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"TestDiscount Error: {ex.Message}");
+                // Console.WriteLine($"TestDiscount Error: {ex.Message}");
                 return Json(new { 
                     success = false, 
                     message = "Lỗi khi kiểm tra mã giảm giá",
@@ -1151,7 +1158,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine($"TestUpdateTicketStatus - TicketId: {request.TicketId}");
+                // Console.WriteLine($"TestUpdateTicketStatus - TicketId: {request.TicketId}");
                 
                 var ticket = await _context.Tickets
                     .FirstOrDefaultAsync(t => t.TicketId == request.TicketId);
@@ -1161,15 +1168,15 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     return Json(new { success = false, message = "Không tìm thấy vé" });
                 }
                 
-                Console.WriteLine($"Current status: {ticket.Status}");
+                // Console.WriteLine($"Current status: {ticket.Status}");
                 
                 // Cập nhật trạng thái
                 ticket.Status = "DaThanhToan";
                 
-                Console.WriteLine("Saving changes...");
+                // Console.WriteLine("Saving changes...");
                 await _context.SaveChangesAsync();
                 
-                Console.WriteLine("Status updated successfully");
+                // Console.WriteLine("Status updated successfully");
                 
                 return Json(new { 
                     success = true, 
@@ -1181,7 +1188,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"TestUpdateTicketStatus Error: {ex.Message}");
+                // Console.WriteLine($"TestUpdateTicketStatus Error: {ex.Message}");
                 return Json(new { 
                     success = false, 
                     message = "Lỗi khi cập nhật trạng thái",
@@ -1196,15 +1203,15 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine("=== DebugDiscountInfo ===");
+                // Console.WriteLine("=== DebugDiscountInfo ===");
                 
                 // Lấy tất cả mã giảm giá
                 var discounts = await _context.Discounts.ToListAsync();
                 
-                Console.WriteLine($"Found {discounts.Count} discounts:");
+                // Console.WriteLine($"Found {discounts.Count} discounts:");
                 foreach (var discount in discounts)
                 {
-                    Console.WriteLine($"- Code: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}, Expiry: {discount.ExpiryDate}");
+                    // Console.WriteLine($"- Code: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}, Expiry: {discount.ExpiryDate}");
                 }
                 
                 // Kiểm tra mã giam50k cụ thể
@@ -1213,7 +1220,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 
                 if (giam50k != null)
                 {
-                    Console.WriteLine($"giam50k details: Type={giam50k.DiscountType}, Value={giam50k.Value}, Expiry={giam50k.ExpiryDate}");
+                    // Console.WriteLine($"giam50k details: Type={giam50k.DiscountType}, Value={giam50k.Value}, Expiry={giam50k.ExpiryDate}");
                     
                     // Test tính toán
                     var originalPrice = 95000m;
@@ -1231,11 +1238,11 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                         finalAmount = Math.Max(0, originalPrice - discountAmount);
                     }
                     
-                    Console.WriteLine($"Calculation test: {originalPrice} - {discountAmount} = {finalAmount}");
+                    // Console.WriteLine($"Calculation test: {originalPrice} - {discountAmount} = {finalAmount}");
                 }
                 else
                 {
-                    Console.WriteLine("giam50k not found!");
+                    // Console.WriteLine("giam50k not found!");
                 }
                 
                 return Json(new
@@ -1261,7 +1268,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DebugDiscountInfo Error: {ex.Message}");
+                // Console.WriteLine($"DebugDiscountInfo Error: {ex.Message}");
                 return Json(new { 
                     success = false, 
                     message = "Lỗi khi debug mã giảm giá",
@@ -1276,7 +1283,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine("=== TestSimpleDiscount ===");
+                // Console.WriteLine("=== TestSimpleDiscount ===");
                 
                 // Test tìm mã giảm giá
                 var discount = await _context.Discounts
@@ -1287,7 +1294,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     return Json(new { success = false, message = "Không tìm thấy mã giảm giá giam50k" });
                 }
                 
-                Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
+                // Console.WriteLine($"Found discount: {discount.Code}, Type: {discount.DiscountType}, Value: {discount.Value}");
                 
                 // Test tính toán giá
                 var originalPrice = 95000m;
@@ -1305,7 +1312,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     finalAmount = Math.Max(0, originalPrice - discountAmount);
                 }
                 
-                Console.WriteLine($"Price calculation: {originalPrice} - {discountAmount} = {finalAmount}");
+                // Console.WriteLine($"Price calculation: {originalPrice} - {discountAmount} = {finalAmount}");
                 
                 return Json(new
                 {
@@ -1328,7 +1335,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"TestSimpleDiscount Error: {ex.Message}");
+                // Console.WriteLine($"TestSimpleDiscount Error: {ex.Message}");
                 return Json(new { 
                     success = false, 
                     message = "Lỗi khi test mã giảm giá",
@@ -1343,15 +1350,15 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
         {
             try
             {
-                Console.WriteLine("=== DebugDatabase ===");
+                // Console.WriteLine("=== DebugDatabase ===");
                 
                 // Test connection
-                Console.WriteLine("Testing database connection...");
+                // Console.WriteLine("Testing database connection...");
                 var canConnect = await _context.Database.CanConnectAsync();
-                Console.WriteLine($"Can connect: {canConnect}");
+                // Console.WriteLine($"Can connect: {canConnect}");
 
                 // Kiểm tra dữ liệu mẫu
-                Console.WriteLine("Getting sample tickets...");
+                // Console.WriteLine("Getting sample tickets...");
                 var sampleTickets = await _context.Tickets
                     .Where(t => t.Status == "ChoXuLy")
                     .Take(5)
@@ -1366,9 +1373,9 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     })
                     .ToListAsync();
 
-                Console.WriteLine($"Found {sampleTickets.Count} pending tickets");
+                // Console.WriteLine($"Found {sampleTickets.Count} pending tickets");
 
-                Console.WriteLine("Getting sample discounts...");
+                // Console.WriteLine("Getting sample discounts...");
                 var sampleDiscounts = await _context.Discounts
                     .Take(5)
                     .Select(d => new
@@ -1381,7 +1388,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     })
                     .ToListAsync();
 
-                Console.WriteLine($"Found {sampleDiscounts.Count} discounts");
+                // Console.WriteLine($"Found {sampleDiscounts.Count} discounts");
 
                 var result = new
                 {
@@ -1394,13 +1401,13 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     discountCount = await _context.Discounts.CountAsync()
                 };
 
-                Console.WriteLine($"Debug result: {System.Text.Json.JsonSerializer.Serialize(result)}");
+                // Console.WriteLine($"Debug result: {System.Text.Json.JsonSerializer.Serialize(result)}");
                 return Json(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DebugDatabase Error: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"DebugDatabase Error: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
                 
                 var errorResult = new
                 {
@@ -1410,7 +1417,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     innerError = ex.InnerException?.Message
                 };
                 
-                Console.WriteLine($"Debug error result: {System.Text.Json.JsonSerializer.Serialize(errorResult)}");
+                // Console.WriteLine($"Debug error result: {System.Text.Json.JsonSerializer.Serialize(errorResult)}");
                 return Json(errorResult);
             }
         }
@@ -1432,8 +1439,8 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
 
             try
             {
-                Console.WriteLine($"DeletePendingTickets - UserId: {userId}");
-                Console.WriteLine($"DeletePendingTickets - TicketIds: {string.Join(",", ticketIds)}");
+                // Console.WriteLine($"DeletePendingTickets - UserId: {userId}");
+                // Console.WriteLine($"DeletePendingTickets - TicketIds: {string.Join(",", ticketIds)}");
 
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -1444,7 +1451,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                                t.Status == "ChoXuLy")
                     .ToListAsync();
 
-                Console.WriteLine($"Found {tickets.Count} tickets to delete");
+                // Console.WriteLine($"Found {tickets.Count} tickets to delete");
 
                 if (!tickets.Any())
                 {
@@ -1456,7 +1463,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                Console.WriteLine($"Successfully deleted {tickets.Count} tickets");
+                // Console.WriteLine($"Successfully deleted {tickets.Count} tickets");
 
                 return Json(new
                 {
@@ -1468,9 +1475,9 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in DeletePendingTickets: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // Console.WriteLine($"Error in DeletePendingTickets: {ex.Message}");
+                // Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
                 return Json(new
                 {
@@ -1498,7 +1505,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
                     .Where(t => t.UserId.ToString() == userId && t.Status == "DaThanhToan")
                     .CountAsync();
 
-                Console.WriteLine($"User {userId} has {orderCount} completed orders");
+                // Console.WriteLine($"User {userId} has {orderCount} completed orders");
 
                 return Json(new
                 {
@@ -1509,7 +1516,7 @@ namespace Project2_Nhom5.Areas.Guest.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetUserOrderCount: {ex.Message}");
+                // Console.WriteLine($"Error in GetUserOrderCount: {ex.Message}");
                 return Json(new
                 {
                     success = false,

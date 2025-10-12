@@ -121,18 +121,18 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
             try
             {
                 // Log the incoming data for debugging
-                Console.WriteLine($"Creating user: Username={user.Username}, Email={user.Email}, Role={user.Role}, Status={user.Status}");
+                // Console.WriteLine($"Creating user: Username={user.Username}, Email={user.Email}, Role={user.Role}, Status={user.Status}");
                 
                 // Check for duplicate email and username only if model is valid
                 if (ModelState.IsValid)
                 {
-                    Console.WriteLine("ModelState is valid, checking for duplicates...");
+                    // Console.WriteLine("ModelState is valid, checking for duplicates...");
                     
                     // Check for duplicate email
                     var existingEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
                     if (existingEmail != null)
                     {
-                        Console.WriteLine($"Duplicate email found: {user.Email}");
+                        // Console.WriteLine($"Duplicate email found: {user.Email}");
                         ModelState.AddModelError("Email", "Email này đã được sử dụng. Vui lòng chọn email khác.");
                     }
 
@@ -140,16 +140,16 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
                     var existingUsername = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
                     if (existingUsername != null)
                     {
-                        Console.WriteLine($"Duplicate username found: {user.Username}");
+                        // Console.WriteLine($"Duplicate username found: {user.Username}");
                         ModelState.AddModelError("Username", "Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("ModelState is invalid:");
+                    // Console.WriteLine("ModelState is invalid:");
                     foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                     {
-                        Console.WriteLine($"  - {error.ErrorMessage}");
+                        // Console.WriteLine($"  - {error.ErrorMessage}");
                     }
                 }
 
@@ -157,7 +157,7 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
                 {
                     try
                     {
-                        Console.WriteLine("Attempting to save user to database...");
+                        // Console.WriteLine("Attempting to save user to database...");
                         
                         // Set default values if not provided
                         if (string.IsNullOrEmpty(user.Role))
@@ -171,12 +171,12 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
 
                         // Hash password using AuthService
                         user.Password = _authService.HashPassword(user.Password);
-                        Console.WriteLine("Password hashed successfully");
+                        // Console.WriteLine("Password hashed successfully");
 
                         _context.Add(user);
                         await _context.SaveChangesAsync();
                         
-                        Console.WriteLine($"User created successfully with ID: {user.UserId}");
+                        // Console.WriteLine($"User created successfully with ID: {user.UserId}");
                         
                         // Check if request wants JSON response
                         if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -188,8 +188,8 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Database error: {ex.Message}");
-                        Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                        // Console.WriteLine($"Database error: {ex.Message}");
+                        // Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                         
                         // Handle any other database constraint violations
                         if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -207,8 +207,8 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
                             else
                             {
                                 // Log the actual error for debugging
-                                Console.WriteLine($"User creation error: {ex.Message}");
-                                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                                // Console.WriteLine($"User creation error: {ex.Message}");
+                                // Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                                 userMessage = "Có lỗi xảy ra khi lưu dữ liệu. Vui lòng kiểm tra lại thông tin.";
                             }
                             
@@ -226,15 +226,15 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
                     {
                         var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                         var errorMessage = string.Join(", ", errors);
-                        Console.WriteLine($"Validation errors: {errorMessage}");
+                        // Console.WriteLine($"Validation errors: {errorMessage}");
                         return Json(new { success = false, message = errorMessage });
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"General error: {ex.Message}");
-                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"General error: {ex.Message}");
+                // Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                 
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {

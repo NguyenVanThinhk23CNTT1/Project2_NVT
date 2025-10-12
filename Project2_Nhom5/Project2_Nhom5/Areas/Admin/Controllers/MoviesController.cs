@@ -16,11 +16,13 @@ namespace Project2_Nhom5.Controllers
     {
         private readonly Project2_Nhom5Context _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<MoviesController> _logger;
 
-        public MoviesController(Project2_Nhom5Context context, IWebHostEnvironment webHostEnvironment)
+        public MoviesController(Project2_Nhom5Context context, IWebHostEnvironment webHostEnvironment, ILogger<MoviesController> logger)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         // GET: Movies
@@ -42,7 +44,7 @@ namespace Project2_Nhom5.Controllers
             // Apply genre filter
             if (!string.IsNullOrEmpty(genre))
             {
-                movies = movies.Where(m => m.Genre == genre);
+                movies = movies.Where(m => m.Genre != null && m.Genre.Contains(genre));
             }
 
             // Apply status filter
@@ -140,6 +142,9 @@ namespace Project2_Nhom5.Controllers
                         var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                         return Json(new { success = false, message = string.Join(", ", errors) });
                     }
+                    
+                    // Return view with validation errors for non-AJAX requests
+                    return View(movie);
                 }
             }
             catch (Exception ex)
@@ -148,20 +153,37 @@ namespace Project2_Nhom5.Controllers
                 {
                     string userMessage = "Có lỗi xảy ra khi tạo phim";
                     
+                    // Log the full exception for debugging
+                    _logger.LogError(ex, "Error creating movie: {Message}", ex.Message);
+                    
                     if (ex.InnerException?.Message?.Contains("REFERENCE constraint") == true)
                     {
-                        userMessage = "Không thể xóa phim này vì đã có lịch chiếu được tạo. Vui lòng xóa lịch chiếu trước.";
+                        userMessage = "Không thể tạo phim này vì có lỗi ràng buộc dữ liệu. Vui lòng kiểm tra lại.";
                     }
                     else if (ex.Message.Contains("duplicate") || ex.Message.Contains("trùng"))
                     {
                         userMessage = "Tên phim này đã tồn tại. Vui lòng chọn tên khác.";
                     }
+                    else if (ex.Message.Contains("database") || ex.Message.Contains("connection"))
+                    {
+                        userMessage = "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.";
+                    }
+                    else if (ex.Message.Contains("truncated") || ex.Message.Contains("truncation"))
+                    {
+                        userMessage = "Dữ liệu quá dài cho một số trường. Vui lòng rút gọn nội dung.";
+                    }
+                    else
+                    {
+                        // For debugging, include more details
+                        userMessage = $"Lỗi: {ex.Message}";
+                    }
                     
                     return Json(new { success = false, message = userMessage });
                 }
+                
+                // Re-throw for non-AJAX requests
+                throw;
             }
-            
-            return View(movie);
         }
 
         // GET: Movies/Edit/5

@@ -115,7 +115,7 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
             try
             {
                 // Log the received data
-                Console.WriteLine($"Received data: MovieId={request.MovieId}, TheaterId={request.TheaterId}, ShowDate={request.ShowDate}, ShowTime={request.ShowTime}");
+                // Console.WriteLine($"Received data: MovieId={request.MovieId}, TheaterId={request.TheaterId}, ShowDate={request.ShowDate}, ShowTime={request.ShowTime}");
                 
                 if (!ModelState.IsValid)
                 {
@@ -149,8 +149,8 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}");
-                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Exception: {ex.Message}");
+                // Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                 return Json(new { success = false, message = $"Lỗi khi tạo lịch chiếu: {ex.Message}" });
             }
         }
@@ -240,7 +240,7 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
             try
             {
                 // Log the received data
-                Console.WriteLine($"Edit - Received data: ShowtimeId={request.ShowtimeId}, MovieId={request.MovieId}, TheaterId={request.TheaterId}, ShowDate={request.ShowDate}, ShowTime={request.ShowTime}");
+                // Console.WriteLine($"Edit - Received data: ShowtimeId={request.ShowtimeId}, MovieId={request.MovieId}, TheaterId={request.TheaterId}, ShowDate={request.ShowDate}, ShowTime={request.ShowTime}");
                 
                 if (id != request.ShowtimeId)
                 {
@@ -283,8 +283,8 @@ namespace Project2_Nhom5.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Edit - Exception: {ex.Message}");
-                Console.WriteLine($"Edit - Inner exception: {ex.InnerException?.Message}");
+                // Console.WriteLine($"Edit - Exception: {ex.Message}");
+                // Console.WriteLine($"Edit - Inner exception: {ex.InnerException?.Message}");
                 return Json(new { success = false, message = $"Lỗi khi cập nhật lịch chiếu: {ex.Message}" });
             }
         }
