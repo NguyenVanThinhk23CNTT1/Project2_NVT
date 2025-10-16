@@ -5,7 +5,10 @@
 .env.development.local
 .env.test.local
 .env.production.local
+<<<<<<< HEAD
 note
+=======
+>>>>>>> ec1cfa8a3b81f0dbeee1d539feee463d4db823cc
 
 # Visual Studio files
 .vs/
@@ -452,6 +455,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 =======
+<<<<<<< HEAD
 # Visual Studio
 .vs/
 *.user
@@ -459,4 +463,13 @@ $RECYCLE.BIN/
 *.dbmdl
 *.jfm
 *.log
+=======
+# Environment files
+.env
+*.env
+!.env.example
+
+# User secrets (if any)
+secrets.json 
+>>>>>>> ec1cfa8a3b81f0dbeee1d539feee463d4db823cc
 >>>>>>> a69d7324732afbefcaf0432d6ab73e02d6596805

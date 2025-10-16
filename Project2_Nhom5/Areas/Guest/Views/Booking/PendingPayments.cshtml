@@ -1,0 +1,1308 @@
+@model Project2_Nhom5.Areas.Guest.Models.PendingPaymentsViewModel
+@{
+    ViewData["Title"] = "Vé chưa thanh toán";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #1a1a2e;
+            --accent-color: #16213e;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --success-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            --page-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --card-bg: #16213e;
+            --border-color: #333;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --page-bg: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+        }
+
+        body {
+            background: var(--page-bg);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-title {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: var(--bg-secondary);
+            border: none;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            border: none;
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.05) 0%, rgba(247, 147, 30, 0.05) 100%);
+            transform: scale(1.01);
+        }
+
+        .form-check-input {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .btn {
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .form-control, .form-select {
+            border-radius: 15px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 202, 240, 0.05) 100%);
+            color: #0c5460;
+            border-left: 4px solid #0dcaf0;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+            color: #0f5132;
+            border-left: 4px solid #198754;
+        }
+
+        .delete-btn {
+            background: var(--danger-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+        .bulk-actions {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .bulk-actions .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .payment-summary {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(247, 147, 30, 0.05) 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .amount-display {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-muted {
+            color: var(--text-secondary) !important;
+        }
+
+        .no-selection-icon {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* Dark theme specific styles */
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: var(--card-bg);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        [data-theme="dark"] .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        [data-theme="dark"] .alert-info {
+            background: linear-gradient(135deg, rgba(13, 202, 240, 0.2) 0%, rgba(13, 202, 240, 0.1) 100%);
+            color: #0dcaf0;
+            border-left: 4px solid #0dcaf0;
+        }
+
+        [data-theme="dark"] .alert-success {
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.2) 0%, rgba(25, 135, 84, 0.1) 100%);
+            color: #20c997;
+            border-left: 4px solid #198754;
+        }
+
+        /* Lucky Wheel Styles - Simple Design */
+        .lucky-wheel-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background: rgba(240, 240, 240, 0.95);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 2rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-width: 400px;
+            min-height: 400px;
+            border: 3px solid #000;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .lucky-wheel-container.show {
+            display: flex;
+            animation: wheelModalAppear 0.5s ease-out;
+        }
+
+        @@keyframes wheelModalAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 350px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        #luckyWheel {
+            border-radius: 50%;
+            border: 4px solid #000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .spin-button {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            height: 26%;
+            width: 26%;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 0;
+            background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
+            color: #c66e16;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .spin-button:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            width: 3em;
+            top: 45%;
+            right: -8%;
+            z-index: 10;
+        }
+
+        .final-value {
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: 1.5em;
+            color: #202020;
+            font-weight: 500;
+            min-height: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 1.5rem 2.5rem;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 
+                0 15px 40px rgba(255, 107, 53, 0.6),
+                0 0 0 3px rgba(255, 255, 255, 0.2);
+            display: none;
+            z-index: 15;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: resultPulse 2s infinite;
+        }
+
+        @@keyframes resultPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .wheel-result.show {
+            display: block;
+            animation: resultAppear 0.5s ease-out, resultPulse 2s infinite 0.5s;
+        }
+
+        @@keyframes resultAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .wheel-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #fff;
+            border: 2px solid #000;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wheel-close:hover {
+            background: #f0f0f0;
+            transform: scale(1.1);
+        }
+
+        .lucky-wheel-trigger {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 6px 20px rgba(255, 107, 53, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lucky-wheel-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(255, 107, 53, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .lucky-wheel-trigger:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+        }
+
+        .wheel-section-text {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: 900;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        /* Wheel title */
+        .wheel-title {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            letter-spacing: 1px;
+        }
+
+        @@media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .bulk-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="page-title">
+                <i class="fas fa-credit-card me-2"></i>
+                Vé chưa thanh toán
+            </h2>
+            
+            @if (!Model.PendingTickets.Any())
+            {
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Bạn không có vé nào chưa thanh toán.
+                </div>
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        Về trang chủ
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <!-- Danh sách vé -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-ticket-alt me-2"></i>
+                                    Chọn vé để thanh toán (@Model.PendingTickets.Count vé)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <input type="checkbox" id="selectAll" class="form-check-input">
+                                                </th>
+                                                <th>Phim</th>
+                                                <th>Rạp</th>
+                                                <th>Ngày chiếu</th>
+                                                <th>Ghế</th>
+                                                <th>Giá</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ticket in Model.PendingTickets)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="form-check-input ticket-checkbox" 
+                                                               value="@ticket.TicketId" data-price="@ticket.Price">
+                                                    </td>
+                                                    <td>
+                                                        <strong>@ticket.MovieTitle</strong>
+                                                    </td>
+                                                    <td>@ticket.TheaterName</td>
+                                                    <td>
+                                                        @ticket.ShowDate.ToString("dd/MM/yyyy")<br>
+                                                        <small class="text-muted">@ticket.ShowTime.ToString(@"hh\:mm")</small>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge @(ticket.SeatType == "VIP" ? "bg-warning" : "bg-secondary")">
+                                                            @ticket.SeatCode
+                                                        </span>
+                                                        <br>
+                                                        <small class="text-muted">@ticket.SeatType</small>
+                                                    </td>
+                                                    <td>
+                                                        <strong class="text-primary">@ticket.Price.ToString("N0") VNĐ</strong>
+                                                    </td>
+                                                    <td>
+                                                        <button class="delete-btn" onclick="deleteTicket(@ticket.TicketId)" title="Xóa vé">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Bulk Actions -->
+                                <div class="bulk-actions" id="bulkActions" style="display: none;">
+                                    <span class="text-muted">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <span id="selectedCount">0</span> vé đã chọn
+                                    </span>
+                                    <button class="btn btn-danger" id="deleteSelected" disabled>
+                                        <i class="fas fa-trash me-2"></i>
+                                        Xóa các vé đã chọn
+                                    </button>
+                                    <button class="btn btn-primary" id="selectAllBtn">
+                                        <i class="fas fa-check-double me-2"></i>
+                                        Chọn tất cả
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thanh toán -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    Thanh toán
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Lucky Wheel Trigger -->
+                                <div id="luckyWheelSection" style="display: none;">
+                                    <button class="lucky-wheel-trigger w-100" id="luckyWheelBtn">
+                                        <i class="fas fa-gift"></i>
+                                        Vòng quay may mắn - Nhận mã giảm giá!
+                                    </button>
+                                </div>
+
+                                <div id="selectedTicketsInfo" style="display: none;">
+                                    <div class="payment-summary">
+                                        <h6><i class="fas fa-list me-2"></i>Vé đã chọn:</h6>
+                                        <div id="selectedTicketsList" class="mb-3"></div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <strong>Tổng tiền:</strong>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <span id="totalAmount" class="amount-display">0 VNĐ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="discountCode" class="form-label">Mã giảm giá (tùy chọn)</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="discountCode" placeholder="Nhập mã giảm giá">
+                                            <button class="btn btn-outline-secondary" type="button" id="applyDiscount">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="discountInfo" style="display: none;" class="mb-3">
+                                        <div class="alert alert-success">
+                                            <i class="fas fa-tag me-2"></i>
+                                            <span id="discountMessage"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <strong>Giảm giá:</strong>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <span id="discountAmount" class="text-success">0 VNĐ</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <strong>Thành tiền:</strong>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <span id="finalAmount" class="text-primary fw-bold">0 VNĐ</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="paymentMethod" class="form-label">Phương thức thanh toán</label>
+                                        <select class="form-select" id="paymentMethod">
+                                            <option value="">Chọn phương thức thanh toán</option>
+                                            <option value="momo">MoMo</option>
+                                            <option value="banking">Chuyển khoản</option>
+                                            <option value="cash">Tiền mặt</option>
+                                        </select>
+                                    </div>
+
+                                    <button class="btn btn-success w-100" id="processPayment" disabled>
+                                        <i class="fas fa-credit-card me-2"></i>
+                                        Thanh toán
+                                    </button>
+                                </div>
+
+                                <div id="noSelectionInfo" class="text-center text-muted">
+                                    <i class="fas fa-hand-pointer fa-3x mb-3 no-selection-icon"></i>
+                                    <p>Vui lòng chọn vé để thanh toán</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Lucky Wheel Modal -->
+<div class="lucky-wheel-container" id="luckyWheelModal">
+    <button class="wheel-close" onclick="closeLuckyWheel()">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <div class="wheel-wrapper">
+        <div class="wheel-title">VÒNG QUAY MAY MẮN</div>
+        <div class="wheel-container">
+            <canvas id="luckyWheel" width="300" height="300"></canvas>
+            <button id="spinBtn" class="spin-button">
+                <i class="fas fa-gift"></i>
+                QUAY
+            </button>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E" alt="pointer" class="wheel-pointer">
+        </div>
+        <div id="finalValue" class="final-value"></div>
+    </div>
+    
+    <div class="wheel-result" id="wheelResult">
+        <div id="resultText">Chúc mừng!</div>
+        <div id="resultDiscount">Bạn đã nhận được giảm giá <span id="discountPercent">0%</span>!</div>
+        <div id="resultCode">Mã: <span id="discountCode">LUCKY2025</span></div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js và Chart DataLabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
+    <script>
+        $(document).ready(function() {
+            let selectedTickets = [];
+            let totalAmount = 0;
+            let discountAmount = 0;
+            let finalAmount = 0;
+            let hasUsedLuckyWheel = false;
+            let userOrderCount = 0;
+
+            // Check if user is eligible for lucky wheel
+            checkLuckyWheelEligibility();
+
+            // Select all checkbox
+            $('#selectAll').change(function() {
+                $('.ticket-checkbox').prop('checked', this.checked);
+                updateSelectedTickets();
+                updateBulkActions();
+            });
+
+            // Individual ticket checkbox
+            $('.ticket-checkbox').change(function() {
+                updateSelectAllState();
+                updateSelectedTickets();
+                updateBulkActions();
+            });
+
+            function updateSelectAllState() {
+                const totalCheckboxes = $('.ticket-checkbox').length;
+                const checkedCheckboxes = $('.ticket-checkbox:checked').length;
+                $('#selectAll').prop('checked', totalCheckboxes === checkedCheckboxes);
+            }
+
+            function updateSelectedTickets() {
+                selectedTickets = [];
+                $('.ticket-checkbox:checked').each(function() {
+                    selectedTickets.push(parseInt($(this).val()));
+                });
+
+                if (selectedTickets.length > 0) {
+                    $('#selectedTicketsInfo').show();
+                    $('#noSelectionInfo').hide();
+                    loadSelectedTicketsInfo();
+                } else {
+                    $('#selectedTicketsInfo').hide();
+                    $('#noSelectionInfo').show();
+                }
+            }
+
+            function loadSelectedTicketsInfo() {
+                $.ajax({
+                    url: '@Url.Action("GetSelectedTicketsInfo", "Booking")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(selectedTickets),
+                    success: function(response) {
+                        if (response.success) {
+                            displaySelectedTickets(response.tickets);
+                            totalAmount = response.totalPrice;
+                            updateAmounts();
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi tải thông tin vé');
+                    }
+                });
+            }
+
+            function displaySelectedTickets(tickets) {
+                let html = '';
+                tickets.forEach(function(ticket) {
+                    html += `
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <small class="text-muted">${ticket.movieTitle}</small><br>
+                                <small>${ticket.seatCode} - ${ticket.seatType}</small>
+                            </div>
+                            <small class="text-primary">${ticket.price.toLocaleString()} VNĐ</small>
+                        </div>
+                    `;
+                });
+                $('#selectedTicketsList').html(html);
+            }
+
+            function updateAmounts() {
+                $('#totalAmount').text(totalAmount.toLocaleString() + ' VNĐ');
+                finalAmount = totalAmount - discountAmount;
+                $('#finalAmount').text(finalAmount.toLocaleString() + ' VNĐ');
+                
+                // Enable/disable payment button
+                const paymentMethod = $('#paymentMethod').val();
+                $('#processPayment').prop('disabled', !paymentMethod || finalAmount <= 0);
+            }
+
+            // Apply discount
+            $('#applyDiscount').click(function() {
+                const discountCode = $('#discountCode').val().trim();
+                if (!discountCode) {
+                    alert('Vui lòng nhập mã giảm giá');
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ApplyDiscountToSelected", "Booking")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        discountCode: discountCode,
+                        subTotal: totalAmount
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            discountAmount = response.discountAmount;
+                            $('#discountAmount').text(discountAmount.toLocaleString() + ' VNĐ');
+                            $('#discountMessage').text(`Giảm ${response.discountAmount.toLocaleString()} VNĐ`);
+                            $('#discountInfo').show();
+                            updateAmounts();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi áp dụng mã giảm giá');
+                    }
+                });
+            });
+
+            // Payment method change
+            $('#paymentMethod').change(function() {
+                updateAmounts();
+            });
+
+            // Process payment
+            $('#processPayment').click(function() {
+                const paymentMethod = $('#paymentMethod').val();
+                const discountCode = $('#discountCode').val().trim();
+
+                if (!paymentMethod) {
+                    alert('Vui lòng chọn phương thức thanh toán');
+                    return;
+                }
+
+                // Cho phép thanh toán khi thành tiền = 0 (miễn phí)
+                if (finalAmount < 0) {
+                    alert('Số tiền thanh toán không hợp lệ');
+                    return;
+                }
+
+                const confirmMessage = finalAmount === 0 
+                    ? `Bạn có chắc chắn muốn thanh toán MIỄN PHÍ cho ${selectedTickets.length} vé?`
+                    : `Bạn có chắc chắn muốn thanh toán ${finalAmount.toLocaleString()} VNĐ cho ${selectedTickets.length} vé?`;
+
+                if (confirm(confirmMessage)) {
+                    $.ajax({
+                        url: '@Url.Action("ProcessSelectedPayments", "Booking")',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            selectedTicketIds: selectedTickets,
+                            paymentMethod: paymentMethod,
+                            discountCode: discountCode || null
+                        }),
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Thanh toán thành công! Mã đặt vé: ' + response.bookingCode);
+                                location.reload();
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi thanh toán');
+                        }
+                    });
+                }
+            });
+
+            // Bulk actions
+            function updateBulkActions() {
+                const checkedCount = $('.ticket-checkbox:checked').length;
+                if (checkedCount > 0) {
+                    $('#bulkActions').show();
+                    $('#selectedCount').text(checkedCount);
+                    $('#deleteSelected').prop('disabled', false);
+                } else {
+                    $('#bulkActions').hide();
+                    $('#deleteSelected').prop('disabled', true);
+                }
+            }
+
+            // Delete selected tickets
+            $('#deleteSelected').click(function() {
+                const selectedIds = [];
+                $('.ticket-checkbox:checked').each(function() {
+                    selectedIds.push(parseInt($(this).val()));
+                });
+
+                if (selectedIds.length === 0) {
+                    alert('Vui lòng chọn vé để xóa');
+                    return;
+                }
+
+                if (confirm(`Bạn có chắc chắn muốn xóa ${selectedIds.length} vé đã chọn?`)) {
+                    deleteTickets(selectedIds);
+                }
+            });
+
+            // Select all button
+            $('#selectAllBtn').click(function() {
+                $('.ticket-checkbox').prop('checked', true);
+                $('#selectAll').prop('checked', true);
+                updateSelectedTickets();
+                updateBulkActions();
+            });
+
+            // Delete single ticket
+            window.deleteTicket = function(ticketId) {
+                if (confirm('Bạn có chắc chắn muốn xóa vé này?')) {
+                    deleteTickets([ticketId]);
+                }
+            };
+
+            // Delete tickets function
+            function deleteTickets(ticketIds) {
+                $.ajax({
+                    url: '@Url.Action("DeletePendingTickets", "Booking")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(ticketIds),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Xóa vé thành công!');
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi xóa vé');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi xóa vé');
+                    }
+                });
+            }
+
+            // Lucky Wheel Functions
+            function checkLuckyWheelEligibility() {
+                $.ajax({
+                    url: '@Url.Action("GetUserOrderCount", "Booking")',
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            userOrderCount = response.orderCount;
+                            console.log(`User has ${userOrderCount} orders`);
+                            
+                            if (userOrderCount >= 3) {
+                                $('#luckyWheelSection').show();
+                                console.log('User is eligible for lucky wheel');
+                            } else {
+                                console.log('User needs more orders for lucky wheel');
+                            }
+                        }
+                    },
+                    error: function() {
+                        console.log('Error checking lucky wheel eligibility');
+                    }
+                });
+            }
+
+            // Chart.js Lucky Wheel
+            let myChart;
+            let isSpinning = false;
+
+            // Initialize Chart.js wheel
+            function initializeWheel() {
+                const wheel = document.getElementById('luckyWheel');
+                const ctx = wheel.getContext('2d');
+
+                // Rotation values for each section
+                const rotationValues = [
+                    { minDegree: 0, maxDegree: 60, value: 10 },
+                    { minDegree: 61, maxDegree: 120, value: 20 },
+                    { minDegree: 121, maxDegree: 180, value: 50 },
+                    { minDegree: 181, maxDegree: 240, value: 80 },
+                    { minDegree: 241, maxDegree: 300, value: 100 },
+                    { minDegree: 301, maxDegree: 360, value: 10 }
+                ];
+
+                // Data for each section
+                const data = [16.67, 16.67, 16.67, 16.67, 16.67, 16.67]; // Equal sections
+                
+                // Colors for each section
+                const pieColors = [
+                    "#ffd700", // 10% - Gold
+                    "#20b2aa", // 20% - Teal  
+                    "#ffd700", // 50% - Gold
+                    "#20b2aa", // 80% - Teal
+                    "#ffd700", // 100% - Gold
+                    "#20b2aa"  // 10% - Teal
+                ];
+
+                // Create chart
+                myChart = new Chart(ctx, {
+                    plugins: [ChartDataLabels],
+                    type: "pie",
+                    data: {
+                        labels: ["10%", "20%", "50%", "80%", "100%", "10%"],
+                        datasets: [{
+                            backgroundColor: pieColors,
+                            data: data,
+                            borderWidth: 2,
+                            borderColor: "#000"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        animation: { duration: 0 },
+                        plugins: {
+                            tooltip: false,
+                            legend: { display: false },
+                            datalabels: {
+                                color: "#000",
+                                formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+                                font: { size: 18, weight: 'bold' }
+                            }
+                        }
+                    }
+                });
+
+                // Store rotation values globally
+                window.rotationValues = rotationValues;
+            }
+
+            // Lucky wheel button click
+            $('#luckyWheelBtn').click(function() {
+                if (hasUsedLuckyWheel) {
+                    alert('Bạn đã sử dụng vòng quay may mắn rồi!');
+                    return;
+                }
+                
+                if (selectedTickets.length === 0) {
+                    alert('Vui lòng chọn vé trước khi quay!');
+                    return;
+                }
+                
+                // Show modal and initialize wheel
+                $('#luckyWheelModal').addClass('show');
+                setTimeout(() => {
+                    initializeWheel();
+                }, 100);
+            });
+
+            // Spin button click
+            $(document).on('click', '#spinBtn', function() {
+                if (isSpinning) return;
+                
+                spinWheel();
+            });
+
+            function spinWheel() {
+                const spinBtn = document.getElementById('spinBtn');
+                const finalValue = document.getElementById('finalValue');
+                
+                isSpinning = true;
+                spinBtn.disabled = true;
+                finalValue.innerHTML = '<p>Chúc may mắn!</p>';
+                
+                // Generate random degree to stop at
+                let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
+                
+                // Spinner count
+                let count = 0;
+                let resultValue = 101; // Start with fast rotation
+                
+                // Interval for rotation animation
+                let rotationInterval = window.setInterval(() => {
+                    // Set rotation for pie chart
+                    myChart.options.rotation = myChart.options.rotation + resultValue;
+                    myChart.update();
+                    
+                    // If rotation > 360 reset it back to 0
+                    if (myChart.options.rotation >= 360) {
+                        count += 1;
+                        resultValue -= 5; // Slow down gradually
+                        myChart.options.rotation = 0;
+                    } else if (count > 15 && myChart.options.rotation == randomDegree) {
+                        // Stop and show result
+                        valueGenerator(randomDegree);
+                        clearInterval(rotationInterval);
+                        count = 0;
+                        resultValue = 101;
+                        isSpinning = false;
+                        spinBtn.disabled = false;
+                    }
+                }, 10);
+            }
+
+            // Display value based on the random angle
+            function valueGenerator(angleValue) {
+                for (let i of window.rotationValues) {
+                    if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+                        const discountPercent = i.value;
+                        const finalValue = document.getElementById('finalValue');
+                        finalValue.innerHTML = `<p>Chúc mừng! Bạn nhận được giảm giá ${discountPercent}%!</p>`;
+                        
+                        // Show result and apply discount
+                        setTimeout(() => {
+                            showWheelResult(discountPercent);
+                        }, 1000);
+                        
+                        // Mark as used
+                        hasUsedLuckyWheel = true;
+                        $('#luckyWheelBtn').text('Đã sử dụng vòng quay');
+                        $('#luckyWheelBtn').prop('disabled', true);
+                        
+                        break;
+                    }
+                }
+            }
+
+            function showWheelResult(discountPercent) {
+                const result = document.getElementById('wheelResult');
+                const discountPercentSpan = document.getElementById('discountPercent');
+                const discountCodeSpan = document.getElementById('discountCode');
+                
+                // Generate unique discount code
+                const discountCode = `LUCKY${discountPercent}${Date.now().toString().slice(-4)}`;
+                
+                // Update result text
+                discountPercentSpan.textContent = `${discountPercent}%`;
+                discountCodeSpan.textContent = discountCode;
+                
+                // Show result
+                result.classList.add('show');
+                
+                // Auto-apply discount after 2 seconds
+                setTimeout(() => {
+                    applyLuckyWheelDiscount(discountPercent, discountCode);
+                }, 2000);
+            }
+
+            function applyLuckyWheelDiscount(discountPercent, discountCode) {
+                // Calculate discount amount
+                discountAmount = totalAmount * (discountPercent / 100);
+                finalAmount = totalAmount - discountAmount;
+                
+                // Update UI
+                $('#discountAmount').text(discountAmount.toLocaleString() + ' VNĐ');
+                $('#discountMessage').text(`Giảm ${discountAmount.toLocaleString()} VNĐ từ vòng quay may mắn!`);
+                $('#discountInfo').show();
+                updateAmounts();
+                
+                // Set discount code in input
+                $('#discountCode').val(discountCode);
+                
+                // Close wheel after applying discount
+                setTimeout(() => {
+                    closeLuckyWheel();
+                }, 1000);
+            }
+
+            function closeLuckyWheel() {
+                $('#luckyWheelModal').removeClass('show');
+                $('#wheelResult').removeClass('show');
+            }
+
+            // Close wheel when clicking outside
+            $('#luckyWheelModal').click(function(e) {
+                if (e.target === this) {
+                    closeLuckyWheel();
+                }
+            });
+        });
+    </script>
+}
